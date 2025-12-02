@@ -1,0 +1,299 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { collection, query, where, getDocs, orderBy, doc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { useAuthStore } from '@/store/useAuthStore';
+import { Order } from '@/types';
+import { motion } from 'framer-motion';
+import Card from '@/components/ui/Card';
+import Modal from '@/components/ui/Modal';
+import { formatCurrency, formatDate } from '@/lib/utils';
+import { Package, Calendar, DollarSign, Eye, X } from 'lucide-react';
+import Button from '@/components/ui/Button';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
+
+export default function OrdersPage() {
+  const { user } = useAuthStore();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      loadOrders();
+    } else {
+      router.push('/login');
+    }
+  }, [user, router]);
+
+  const loadOrders = async () => {
+    if (!user) return;
+
+    try {
+      setLoading(true);
+      const q = query(
+        collection(db, 'orders'),
+        where('userId', '==', user.id),
+        orderBy('createdAt', 'desc')
+      );
+      const snapshot = await getDocs(q);
+      const ordersData: Order[] = [];
+
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        ordersData.push({
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt?.toDate() || new Date(),
+          updatedAt: data.updatedAt?.toDate() || new Date(),
+        } as Order);
+      });
+
+      setOrders(ordersData);
+    } catch (error) {
+      console.error('Error loading orders:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleViewDetails = (order: Order) => {
+    setSelectedOrder(order);
+    setIsModalOpen(true);
+  };
+
+  const handleCancelOrder = async (order: Order) => {
+    if (!confirm('Are you sure you want to cancel this order? The items will be returned to inventory.')) {
+      return;
+    }
+
+    // Only allow cancellation of pending orders
+    if (order.status !== 'pending') {
+      toast.error(`Cannot cancel order. Order status is: ${order.status}`);
+      return;
+    }
+
+    try {
+      // Update order status to cancelled
+      const orderRef = doc(db, 'orders', order.id);
+      await updateDoc(orderRef, {
+        status: 'cancelled',
+        updatedAt: serverTimestamp(),
+      });
+
+      // Restore product quantities (add back to inventory)
+      for (const item of order.items) {
+        const productRef = doc(db, 'products', item.productId);
+        await updateDoc(productRef, {
+          quantity: increment(item.quantity),
+        });
+      }
+
+      toast.success('Order cancelled successfully. Items returned to inventory.');
+      
+      // Reload orders to reflect the change
+      loadOrders();
+      
+      // Close modal if this order was selected
+      if (selectedOrder?.id === order.id) {
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.error('Error cancelling order:', error);
+      toast.error('Failed to cancel order. Please try again.');
+    }
+  };
+
+  const canCancelOrder = (order: Order) => {
+    // Only pending orders can be cancelled
+    return order.status === 'pending';
+  };
+
+  const getStatusColor = (status: string) => {
+    const colors = {
+      pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+      confirmed: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+      processing: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+      completed: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+      cancelled: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+    };
+    return colors[status as keyof typeof colors] || colors.pending;
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+            My Orders
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            View your order history and track current orders
+          </p>
+        </motion.div>
+
+        {orders.length === 0 ? (
+          <Card className="text-center py-12">
+            <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              No orders yet
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              Start shopping to see your orders here
+            </p>
+            <Button onClick={() => router.push('/products')}>
+              Browse Products
+            </Button>
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            {orders.map((order, index) => (
+              <motion.div
+                key={order.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+              >
+                <Card className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-4 mb-4">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                          Order #{order.id.slice(0, 8)}
+                        </h3>
+                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
+                          {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="flex items-center text-gray-600 dark:text-gray-400">
+                          <Calendar className="w-5 h-5 mr-2" />
+                          <span>{formatDate(order.createdAt)}</span>
+                        </div>
+                        <div className="flex items-center text-gray-600 dark:text-gray-400">
+                          <Package className="w-5 h-5 mr-2" />
+                          <span>{order.items.length} {order.items.length === 1 ? 'item' : 'items'}</span>
+                        </div>
+                        <div className="flex items-center text-gray-900 dark:text-white font-semibold">
+                          <DollarSign className="w-5 h-5 mr-2" />
+                          <span>{formatCurrency(order.totalAmount)}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => handleViewDetails(order)}
+                      >
+                        <Eye className="w-4 h-4 mr-2" />
+                        View Details
+                      </Button>
+                      {canCancelOrder(order) && (
+                        <Button
+                          variant="outline"
+                          onClick={() => handleCancelOrder(order)}
+                          className="text-red-600 hover:text-red-700 border-red-300 hover:border-red-400 dark:text-red-400 dark:border-red-600"
+                        >
+                          <X className="w-4 h-4 mr-2" />
+                          Cancel
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={`Order #${selectedOrder?.id.slice(0, 8)}`}
+        size="lg"
+      >
+        {selectedOrder && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Status</p>
+                <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(selectedOrder.status)}`}>
+                  {selectedOrder.status.charAt(0).toUpperCase() + selectedOrder.status.slice(1)}
+                </span>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Date</p>
+                <p className="text-lg font-medium text-gray-900 dark:text-white">
+                  {formatDate(selectedOrder.createdAt)}
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Items</p>
+              <div className="space-y-2">
+                {selectedOrder.items.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                  >
+                    <div>
+                      <p className="font-medium text-gray-900 dark:text-white">
+                        {item.productName}
+                      </p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {item.pharmacyName} • Qty: {item.quantity}
+                      </p>
+                    </div>
+                    <p className="font-semibold text-gray-900 dark:text-white">
+                      {formatCurrency(item.price * item.quantity)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-lg font-semibold text-gray-900 dark:text-white">Total</span>
+                <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {formatCurrency(selectedOrder.totalAmount)}
+                </span>
+              </div>
+              {canCancelOrder(selectedOrder) && (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    handleCancelOrder(selectedOrder);
+                  }}
+                  className="w-full text-red-600 hover:text-red-700 border-red-300 hover:border-red-400 dark:text-red-400 dark:border-red-600"
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Cancel Order
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
+      </Modal>
+    </div>
+  );
+}
+
