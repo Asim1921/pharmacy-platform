@@ -24,6 +24,14 @@
    ```
 
 5. **Create Admin User**
+
+   **Option 1: Using Seed Script (Recommended)**
+   - Run `npm run seed` to seed the database
+   - The script will attempt to create an admin user automatically
+   - Default credentials: `admin@pharmacy.com` / `admin123`
+   - See `ADMIN_CREDENTIALS.md` for details
+
+   **Option 2: Manual Creation**
    - Register a new account through the UI
    - In Firebase Console → Firestore → `users` collection
    - Find your user document and change `role` field to `"admin"`

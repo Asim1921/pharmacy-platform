@@ -117,10 +117,21 @@ To modify the seed script:
 - Add more products in the product arrays
 - Adjust quantities, prices, or other fields as needed
 
+## Admin User
+
+The seed script attempts to create a default admin user with these credentials:
+
+**Email:** `admin@pharmacy.com`  
+**Password:** `admin123`
+
+If the admin user is created successfully, you can login immediately with these credentials.
+
+If the admin user creation fails (due to Firebase Auth limitations), see `ADMIN_CREDENTIALS.md` for manual setup instructions.
+
 ## Next Steps
 
 After seeding:
-1. Create an admin user (register, then update role in Firestore)
+1. Login with admin credentials (or create manually if needed)
 2. Test the application with real data
 3. Explore the map to see all pharmacy locations
 4. Test product search and filtering

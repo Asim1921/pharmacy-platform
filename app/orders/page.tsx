@@ -35,27 +35,68 @@ export default function OrdersPage() {
 
     try {
       setLoading(true);
-      const q = query(
-        collection(db, 'orders'),
-        where('userId', '==', user.id),
-        orderBy('createdAt', 'desc')
-      );
-      const snapshot = await getDocs(q);
-      const ordersData: Order[] = [];
+      
+      // Try the indexed query first (with orderBy)
+      try {
+        const q = query(
+          collection(db, 'orders'),
+          where('userId', '==', user.id),
+          orderBy('createdAt', 'desc')
+        );
+        const snapshot = await getDocs(q);
+        const ordersData: Order[] = [];
 
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        ordersData.push({
-          id: doc.id,
-          ...data,
-          createdAt: data.createdAt?.toDate() || new Date(),
-          updatedAt: data.updatedAt?.toDate() || new Date(),
-        } as Order);
-      });
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          ordersData.push({
+            id: doc.id,
+            ...data,
+            createdAt: data.createdAt?.toDate() || new Date(),
+            updatedAt: data.updatedAt?.toDate() || new Date(),
+          } as Order);
+        });
 
-      setOrders(ordersData);
-    } catch (error) {
+        setOrders(ordersData);
+      } catch (indexError: any) {
+        // If index error, fallback to query without orderBy and sort in memory
+        const isIndexError = 
+          indexError?.code === 'failed-precondition' || 
+          indexError?.code === 9 || // Firestore error code for failed-precondition
+          indexError?.message?.toLowerCase().includes('index') ||
+          indexError?.message?.toLowerCase().includes('requires an index');
+        
+        if (isIndexError) {
+          console.warn('Index not found, using fallback query:', indexError);
+          
+          // Fallback: Query without orderBy, then sort in memory
+          const fallbackQuery = query(
+            collection(db, 'orders'),
+            where('userId', '==', user.id)
+          );
+          const snapshot = await getDocs(fallbackQuery);
+          const ordersData: Order[] = [];
+
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            ordersData.push({
+              id: doc.id,
+              ...data,
+              createdAt: data.createdAt?.toDate() || new Date(),
+              updatedAt: data.updatedAt?.toDate() || new Date(),
+            } as Order);
+          });
+
+          // Sort by createdAt in descending order (newest first)
+          ordersData.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+          setOrders(ordersData);
+        } else {
+          // Re-throw if it's a different error
+          throw indexError;
+        }
+      }
+    } catch (error: any) {
       console.error('Error loading orders:', error);
+      toast.error('Failed to load orders. Please try again.');
     } finally {
       setLoading(false);
     }

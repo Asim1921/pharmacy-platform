@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, serverTimestamp, doc, setDoc, getDoc } from 'firebase/firestore';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDeZmWxNBpLQjM4gl-cED8OrQRLgbxI1j4",
@@ -13,6 +14,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 // Pharmacy data with realistic locations (various cities)
 const pharmacies = [
@@ -259,11 +261,56 @@ function getRandomQuantity(): number {
   return Math.floor(Math.random() * 101);
 }
 
+// Admin user credentials
+const ADMIN_EMAIL = 'admin@pharmacy.com';
+const ADMIN_PASSWORD = 'admin123';
+const ADMIN_NAME = 'Admin User';
+
 // Main seed function
 async function seedDatabase() {
   console.log('🌱 Starting database seeding...\n');
 
   try {
+    // Step 0: Create admin user
+    console.log('👤 Creating admin user...');
+    let adminCreated = false;
+    try {
+      // Try to create admin user
+      const adminUserCredential = await createUserWithEmailAndPassword(auth, ADMIN_EMAIL, ADMIN_PASSWORD);
+      const adminUserId = adminUserCredential.user.uid;
+      
+      // Create user document in Firestore with admin role
+      await setDoc(doc(db, 'users', adminUserId), {
+        name: ADMIN_NAME,
+        email: ADMIN_EMAIL,
+        role: 'admin',
+        createdAt: serverTimestamp(),
+      });
+      
+      console.log(`✅ Created admin user: ${ADMIN_EMAIL} (ID: ${adminUserId})`);
+      adminCreated = true;
+    } catch (error: any) {
+      if (error.code === 'auth/email-already-in-use') {
+        console.log(`⚠️  Admin user ${ADMIN_EMAIL} already exists.`);
+        console.log(`   If you need to reset the role, update it in Firestore manually.`);
+      } else {
+        console.error('⚠️  Error creating admin user:', error.message);
+        console.log('   This might be due to Firebase Auth limitations in Node.js environment.');
+        console.log('   Please create the admin user manually (see ADMIN_CREDENTIALS.md)');
+      }
+    }
+
+    console.log(`\n📋 Admin Credentials (if created):`);
+    console.log(`   Email: ${ADMIN_EMAIL}`);
+    console.log(`   Password: ${ADMIN_PASSWORD}`);
+    console.log(`   Role: admin`);
+    if (!adminCreated) {
+      console.log(`\n   ⚠️  Admin user was not created automatically.`);
+      console.log(`   See ADMIN_CREDENTIALS.md for manual setup instructions.\n`);
+    } else {
+      console.log(`\n`);
+    }
+
     // Step 1: Create pharmacies
     console.log('📍 Creating pharmacies...');
     const pharmacyIds: string[] = [];
