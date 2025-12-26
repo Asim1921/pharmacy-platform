@@ -49,12 +49,19 @@ export default function CartPage() {
 
       const orderRef = await addDoc(collection(db, 'orders'), orderData);
 
-      // Update product quantities
-      for (const item of items) {
-        const productRef = doc(db, 'products', item.productId);
-        await updateDoc(productRef, {
-          quantity: increment(-item.quantity),
-        });
+      // Try to update product quantities (non-critical - admin will handle inventory on order acceptance)
+      // If this fails due to permissions, it's okay - inventory will be updated when admin accepts the order
+      try {
+        for (const item of items) {
+          const productRef = doc(db, 'products', item.productId);
+          await updateDoc(productRef, {
+            quantity: increment(-item.quantity),
+          });
+        }
+      } catch (inventoryError) {
+        // Log inventory update error but don't fail the order
+        console.warn('Inventory update failed (will be handled by admin):', inventoryError);
+        // This is expected for regular users - inventory will be updated when admin accepts the order
       }
 
       toast.success('Order placed successfully!');
