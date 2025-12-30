@@ -49,27 +49,35 @@ export default function CartPage() {
 
       const orderRef = await addDoc(collection(db, 'orders'), orderData);
 
-      // Try to update product quantities (non-critical - admin will handle inventory on order acceptance)
-      // If this fails due to permissions, it's okay - inventory will be updated when admin accepts the order
-      try {
-        for (const item of items) {
-          const productRef = doc(db, 'products', item.productId);
-          await updateDoc(productRef, {
-            quantity: increment(-item.quantity),
-          });
+      // Update product quantities - handle errors per product but don't fail the order
+      const quantityUpdateErrors: string[] = [];
+      for (const item of items) {
+        try {
+        const productRef = doc(db, 'products', item.productId);
+        await updateDoc(productRef, {
+          quantity: increment(-item.quantity),
+        });
+        } catch (quantityError) {
+          // Log error but don't fail the order
+          console.warn(`Failed to update quantity for product ${item.productId}:`, quantityError);
+          quantityUpdateErrors.push(item.productName);
         }
-      } catch (inventoryError) {
-        // Log inventory update error but don't fail the order
-        console.warn('Inventory update failed (will be handled by admin):', inventoryError);
-        // This is expected for regular users - inventory will be updated when admin accepts the order
       }
 
+      // Show success message
+      if (quantityUpdateErrors.length > 0) {
+        toast.success('Order placed successfully! (Some inventory updates may need admin review)');
+      } else {
       toast.success('Order placed successfully!');
+      }
+      
       clearCart();
       router.push('/orders');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error placing order:', error);
-      toast.error('Failed to place order. Please try again.');
+      // Only show error if order creation actually failed
+      const errorMessage = error?.message || 'Failed to place order. Please try again.';
+      toast.error(errorMessage);
     }
   };
 

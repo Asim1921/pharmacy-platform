@@ -189,7 +189,7 @@ export default function MapPage() {
     if (pharmacies.length > 0 && pharmacies[0]) {
       return [pharmacies[0].latitude, pharmacies[0].longitude];
     }
-    return [40.7128, -74.0060]; // Default to NYC
+    return [51.5074, -0.1278]; // Default to London, UK
   }, [pharmacies.length > 0 ? pharmacies[0]?.latitude : null, pharmacies.length > 0 ? pharmacies[0]?.longitude : null]);
 
   // Track if map should render - only once after loading

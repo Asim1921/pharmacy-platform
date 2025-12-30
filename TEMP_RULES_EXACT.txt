@@ -1,0 +1,42 @@
+Copy and paste EXACTLY this into Firebase Console → Firestore → Rules:
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    match /pharmacies/{pharmacyId} {
+      allow read, write: if true;
+    }
+    
+    match /products/{productId} {
+      allow read, write: if true;
+    }
+    
+    match /orders/{orderId} {
+      allow read: if request.auth != null && 
+        (resource.data.userId == request.auth.uid || 
+         (request.auth != null && 
+          exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'));
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow update: if request.auth != null && 
+        ((resource.data.userId == request.auth.uid && resource.data.status == 'pending') ||
+         (request.auth != null && 
+          exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'));
+    }
+  }
+}
+
+IMPORTANT:
+1. Delete ALL existing rules first
+2. Paste this EXACTLY
+3. Click PUBLISH
+4. Wait for confirmation
+5. Then run: npm run update-locations
+6. REVERT rules back after!
+

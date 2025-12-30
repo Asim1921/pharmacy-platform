@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { collection, query, where, getDocs, orderBy, doc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Order } from '@/types';
@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 import Card from '@/components/ui/Card';
 import Modal from '@/components/ui/Modal';
 import { formatCurrency, formatDate } from '@/lib/utils';
-import { Package, Calendar, DollarSign, Eye, X } from 'lucide-react';
+import { Package, Calendar, PoundSterling, Eye, X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
@@ -35,65 +35,29 @@ export default function OrdersPage() {
 
     try {
       setLoading(true);
-      
-      // Try the indexed query first (with orderBy)
-      try {
-        const q = query(
-          collection(db, 'orders'),
-          where('userId', '==', user.id),
-          orderBy('createdAt', 'desc')
-        );
-        const snapshot = await getDocs(q);
-        const ordersData: Order[] = [];
+      // Query without orderBy to avoid index requirement - we'll sort in memory
+      // This works immediately without needing to create a composite index
+      const q = query(
+        collection(db, 'orders'),
+        where('userId', '==', user.id)
+      );
+      const snapshot = await getDocs(q);
+      const ordersData: Order[] = [];
 
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          ordersData.push({
-            id: doc.id,
-            ...data,
-            createdAt: data.createdAt?.toDate() || new Date(),
-            updatedAt: data.updatedAt?.toDate() || new Date(),
-          } as Order);
-        });
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        ordersData.push({
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt?.toDate() || new Date(),
+          updatedAt: data.updatedAt?.toDate() || new Date(),
+        } as Order);
+      });
 
-        setOrders(ordersData);
-      } catch (indexError: any) {
-        // If index error, fallback to query without orderBy and sort in memory
-        const isIndexError = 
-          indexError?.code === 'failed-precondition' || 
-          indexError?.code === 9 || // Firestore error code for failed-precondition
-          indexError?.message?.toLowerCase().includes('index') ||
-          indexError?.message?.toLowerCase().includes('requires an index');
-        
-        if (isIndexError) {
-          console.warn('Index not found, using fallback query:', indexError);
-          
-          // Fallback: Query without orderBy, then sort in memory
-          const fallbackQuery = query(
-            collection(db, 'orders'),
-            where('userId', '==', user.id)
-          );
-          const snapshot = await getDocs(fallbackQuery);
-          const ordersData: Order[] = [];
+      // Sort in memory by createdAt descending (newest first)
+      ordersData.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
-          snapshot.forEach((doc) => {
-            const data = doc.data();
-            ordersData.push({
-              id: doc.id,
-              ...data,
-              createdAt: data.createdAt?.toDate() || new Date(),
-              updatedAt: data.updatedAt?.toDate() || new Date(),
-            } as Order);
-          });
-
-          // Sort by createdAt in descending order (newest first)
-          ordersData.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-          setOrders(ordersData);
-        } else {
-          // Re-throw if it's a different error
-          throw indexError;
-        }
-      }
+      setOrders(ordersData);
     } catch (error: any) {
       console.error('Error loading orders:', error);
       toast.error('Failed to load orders. Please try again.');
@@ -126,15 +90,27 @@ export default function OrdersPage() {
         updatedAt: serverTimestamp(),
       });
 
-      // Restore product quantities (add back to inventory)
+      // Restore product quantities (add back to inventory) - handle errors per product
+      const quantityUpdateErrors: string[] = [];
       for (const item of order.items) {
+        try {
         const productRef = doc(db, 'products', item.productId);
         await updateDoc(productRef, {
           quantity: increment(item.quantity),
         });
+        } catch (quantityError) {
+          // Log error but don't fail the cancellation
+          console.warn(`Failed to restore quantity for product ${item.productId}:`, quantityError);
+          quantityUpdateErrors.push(item.productName);
+        }
       }
 
+      // Show success message
+      if (quantityUpdateErrors.length > 0) {
+        toast.success('Order cancelled successfully. (Some inventory updates may need admin review)');
+      } else {
       toast.success('Order cancelled successfully. Items returned to inventory.');
+      }
       
       // Reload orders to reflect the change
       loadOrders();
@@ -143,9 +119,11 @@ export default function OrdersPage() {
       if (selectedOrder?.id === order.id) {
         setIsModalOpen(false);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error cancelling order:', error);
-      toast.error('Failed to cancel order. Please try again.');
+      // Only show error if order cancellation actually failed
+      const errorMessage = error?.message || 'Failed to cancel order. Please try again.';
+      toast.error(errorMessage);
     }
   };
 
@@ -232,7 +210,7 @@ export default function OrdersPage() {
                           <span>{order.items.length} {order.items.length === 1 ? 'item' : 'items'}</span>
                         </div>
                         <div className="flex items-center text-gray-900 dark:text-white font-semibold">
-                          <DollarSign className="w-5 h-5 mr-2" />
+                          <PoundSterling className="w-5 h-5 mr-2" />
                           <span>{formatCurrency(order.totalAmount)}</span>
                         </div>
                       </div>

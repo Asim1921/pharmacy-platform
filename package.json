@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed": "tsx scripts/seed-database.ts"
+    "seed": "tsx scripts/seed-database.ts",
+    "create-admin": "tsx scripts/create-admin.ts",
+    "update-locations": "tsx scripts/update-pharmacy-locations.ts"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
@@ -16,6 +18,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "firebase": "^12.6.0",
+    "firebase-admin": "^13.6.0",
     "framer-motion": "^12.23.24",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.554.0",

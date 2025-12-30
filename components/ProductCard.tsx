@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ShoppingCart, Package, Calendar, DollarSign, MapPin } from 'lucide-react';
+import { ShoppingCart, Package, Calendar, PoundSterling, MapPin } from 'lucide-react';
 import { Product, Pharmacy } from '@/types';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import Button from './ui/Button';
@@ -83,7 +83,7 @@ export default function ProductCard({ product, pharmacy, onViewDetails }: Produc
         {/* Price */}
         <div className="mb-4">
           <div className="inline-flex items-center gap-2 px-3 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
-            <DollarSign className="w-4 h-4 text-emerald-400" />
+            <PoundSterling className="w-4 h-4 text-emerald-400" />
             <span className="text-xl font-bold text-emerald-400">
               {formatCurrency(product.price)}
             </span>

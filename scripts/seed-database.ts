@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, serverTimestamp, doc, setDoc, getDoc } from 'firebase/firestore';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getFirestore, collection, addDoc, serverTimestamp, getDocs, doc, writeBatch, setDoc } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDeZmWxNBpLQjM4gl-cED8OrQRLgbxI1j4",
@@ -13,142 +13,146 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
-// Pharmacy data with realistic locations (various cities)
+// Admin credentials for seeding
+const ADMIN_EMAIL = 'admin@pharmacy.com';
+const ADMIN_PASSWORD = 'admin123456';
+
+// Pharmacy data with UK locations
 const pharmacies = [
   {
-    name: "HealthCare Pharmacy Downtown",
-    address: "123 Main Street",
-    city: "New York",
-    state: "NY",
-    zipCode: "10001",
-    phone: "(212) 555-0101",
-    email: "downtown@healthcarepharmacy.com",
-    latitude: 40.7128,
-    longitude: -74.0060,
+    name: "HealthCare Pharmacy Central",
+    address: "123 Oxford Street",
+    city: "London",
+    state: "Greater London",
+    zipCode: "W1D 2HX",
+    phone: "+44 20 7123 4567",
+    email: "central@healthcarepharmacy.co.uk",
+    latitude: 51.5155,
+    longitude: -0.1419,
   },
   {
     name: "MediQuick Pharmacy",
-    address: "456 Oak Avenue",
-    city: "Los Angeles",
-    state: "CA",
-    zipCode: "90001",
-    phone: "(213) 555-0202",
-    email: "info@mediquick.com",
-    latitude: 34.0522,
-    longitude: -118.2437,
+    address: "456 King Street",
+    city: "Manchester",
+    state: "Greater Manchester",
+    zipCode: "M2 4PD",
+    phone: "+44 161 234 5678",
+    email: "info@mediquick.co.uk",
+    latitude: 53.4808,
+    longitude: -2.2426,
   },
   {
     name: "Wellness Corner Pharmacy",
-    address: "789 Elm Street",
-    city: "Chicago",
-    state: "IL",
-    zipCode: "60601",
-    phone: "(312) 555-0303",
-    email: "contact@wellnesscorner.com",
-    latitude: 41.8781,
-    longitude: -87.6298,
+    address: "789 High Street",
+    city: "Birmingham",
+    state: "West Midlands",
+    zipCode: "B4 7ET",
+    phone: "+44 121 345 6789",
+    email: "contact@wellnesscorner.co.uk",
+    latitude: 52.4862,
+    longitude: -1.8904,
   },
   {
     name: "Family Care Pharmacy",
-    address: "321 Pine Road",
-    city: "Houston",
-    state: "TX",
-    zipCode: "77001",
-    phone: "(713) 555-0404",
-    email: "hello@familycarepharmacy.com",
-    latitude: 29.7604,
-    longitude: -95.3698,
+    address: "321 Princes Street",
+    city: "Edinburgh",
+    state: "Scotland",
+    zipCode: "EH2 4AD",
+    phone: "+44 131 456 7890",
+    email: "hello@familycarepharmacy.co.uk",
+    latitude: 55.9533,
+    longitude: -3.1883,
   },
   {
     name: "Community Health Pharmacy",
-    address: "654 Maple Drive",
-    city: "Phoenix",
-    state: "AZ",
-    zipCode: "85001",
-    phone: "(602) 555-0505",
-    email: "info@communityhealth.com",
-    latitude: 33.4484,
-    longitude: -112.0740,
+    address: "654 Queen Street",
+    city: "Cardiff",
+    state: "Wales",
+    zipCode: "CF10 2HQ",
+    phone: "+44 29 2012 3456",
+    email: "info@communityhealth.co.uk",
+    latitude: 51.4816,
+    longitude: -3.1791,
   },
   {
     name: "QuickMed Pharmacy",
-    address: "987 Cedar Lane",
-    city: "Philadelphia",
-    state: "PA",
-    zipCode: "19101",
-    phone: "(215) 555-0606",
-    email: "support@quickmed.com",
-    latitude: 39.9526,
-    longitude: -75.1652,
+    address: "987 George Street",
+    city: "Bristol",
+    state: "South West England",
+    zipCode: "BS1 5TR",
+    phone: "+44 117 567 8901",
+    email: "support@quickmed.co.uk",
+    latitude: 51.4545,
+    longitude: -2.5879,
   },
   {
     name: "GreenLeaf Pharmacy",
-    address: "147 Birch Street",
-    city: "San Antonio",
-    state: "TX",
-    zipCode: "78201",
-    phone: "(210) 555-0707",
-    email: "contact@greenleafpharmacy.com",
-    latitude: 29.4241,
-    longitude: -98.4936,
+    address: "147 Victoria Road",
+    city: "Leeds",
+    state: "West Yorkshire",
+    zipCode: "LS6 1DR",
+    phone: "+44 113 678 9012",
+    email: "contact@greenleafpharmacy.co.uk",
+    latitude: 53.8008,
+    longitude: -1.5491,
   },
   {
     name: "CityMed Pharmacy",
-    address: "258 Spruce Avenue",
-    city: "San Diego",
-    state: "CA",
-    zipCode: "92101",
-    phone: "(619) 555-0808",
-    email: "info@citymed.com",
-    latitude: 32.7157,
-    longitude: -117.1611,
+    address: "258 High Street",
+    city: "Liverpool",
+    state: "Merseyside",
+    zipCode: "L1 4DQ",
+    phone: "+44 151 789 0123",
+    email: "info@citymed.co.uk",
+    latitude: 53.4084,
+    longitude: -2.9916,
   },
   {
     name: "Neighborhood Pharmacy",
-    address: "369 Willow Way",
-    city: "Dallas",
-    state: "TX",
-    zipCode: "75201",
-    phone: "(214) 555-0909",
-    email: "help@neighborhoodpharmacy.com",
-    latitude: 32.7767,
-    longitude: -96.7970,
+    address: "369 Market Street",
+    city: "Newcastle",
+    state: "Tyne and Wear",
+    zipCode: "NE1 7RU",
+    phone: "+44 191 890 1234",
+    email: "help@neighborhoodpharmacy.co.uk",
+    latitude: 54.9783,
+    longitude: -1.6178,
   },
   {
     name: "HealthFirst Pharmacy",
-    address: "741 Ash Boulevard",
-    city: "San Jose",
-    state: "CA",
-    zipCode: "95101",
-    phone: "(408) 555-1010",
-    email: "support@healthfirst.com",
-    latitude: 37.3382,
-    longitude: -121.8863,
+    address: "741 Broad Street",
+    city: "Sheffield",
+    state: "South Yorkshire",
+    zipCode: "S1 2HQ",
+    phone: "+44 114 901 2345",
+    email: "support@healthfirst.co.uk",
+    latitude: 53.3811,
+    longitude: -1.4701,
   },
   {
     name: "PrimeCare Pharmacy",
-    address: "852 Poplar Street",
-    city: "Austin",
-    state: "TX",
-    zipCode: "78701",
-    phone: "(512) 555-1111",
-    email: "info@primecarepharmacy.com",
-    latitude: 30.2672,
-    longitude: -97.7431,
+    address: "852 Church Street",
+    city: "Nottingham",
+    state: "Nottinghamshire",
+    zipCode: "NG1 5DT",
+    phone: "+44 115 012 3456",
+    email: "info@primecarepharmacy.co.uk",
+    latitude: 52.9548,
+    longitude: -1.1581,
   },
   {
     name: "VitalHealth Pharmacy",
-    address: "963 Sycamore Road",
-    city: "Jacksonville",
-    state: "FL",
-    zipCode: "32201",
-    phone: "(904) 555-1212",
-    email: "contact@vitalhealth.com",
-    latitude: 30.3322,
-    longitude: -81.6557,
+    address: "963 High Street",
+    city: "Leicester",
+    state: "Leicestershire",
+    zipCode: "LE1 6TP",
+    phone: "+44 116 123 4567",
+    email: "contact@vitalhealth.co.uk",
+    latitude: 52.6369,
+    longitude: -1.1398,
   },
 ];
 
@@ -261,56 +265,89 @@ function getRandomQuantity(): number {
   return Math.floor(Math.random() * 101);
 }
 
-// Admin user credentials
-const ADMIN_EMAIL = 'admin@pharmacy.com';
-const ADMIN_PASSWORD = 'admin123';
-const ADMIN_NAME = 'Admin User';
+// Delete all documents in a collection
+async function deleteCollection(collectionName: string) {
+  try {
+    console.log(`🗑️  Deleting existing ${collectionName}...`);
+    const snapshot = await getDocs(collection(db, collectionName));
+    
+    if (snapshot.empty) {
+      console.log(`   No ${collectionName} to delete.\n`);
+      return;
+    }
+
+    const batchSize = 500; // Firestore batch limit
+    let deletedCount = 0;
+
+    // Delete in batches
+    for (let i = 0; i < snapshot.docs.length; i += batchSize) {
+      const batch = writeBatch(db);
+      const batchDocs = snapshot.docs.slice(i, i + batchSize);
+      
+      batchDocs.forEach((docSnapshot) => {
+        batch.delete(doc(db, collectionName, docSnapshot.id));
+      });
+      
+      await batch.commit();
+      deletedCount += batchDocs.length;
+      console.log(`   Deleted ${deletedCount}/${snapshot.docs.length} ${collectionName}...`);
+    }
+    
+    console.log(`✅ Deleted ${deletedCount} ${collectionName}\n`);
+  } catch (error: any) {
+    if (error.code === 'permission-denied') {
+      console.log(`⚠️  Permission denied: Cannot delete ${collectionName} automatically.`);
+      console.log(`   Please delete ${collectionName} manually from Firebase Console.`);
+      console.log(`   Continuing with seeding (may create duplicates)...\n`);
+    } else {
+      console.error(`❌ Error deleting ${collectionName}:`, error.message);
+      throw error;
+    }
+  }
+}
 
 // Main seed function
 async function seedDatabase() {
   console.log('🌱 Starting database seeding...\n');
 
   try {
-    // Step 0: Create admin user
-    console.log('👤 Creating admin user...');
-    let adminCreated = false;
+    // Authenticate as admin first (or create admin if doesn't exist)
+    console.log('🔐 Authenticating as admin...');
     try {
-      // Try to create admin user
-      const adminUserCredential = await createUserWithEmailAndPassword(auth, ADMIN_EMAIL, ADMIN_PASSWORD);
-      const adminUserId = adminUserCredential.user.uid;
-      
-      // Create user document in Firestore with admin role
-      await setDoc(doc(db, 'users', adminUserId), {
-        name: ADMIN_NAME,
-        email: ADMIN_EMAIL,
-        role: 'admin',
-        createdAt: serverTimestamp(),
-      });
-      
-      console.log(`✅ Created admin user: ${ADMIN_EMAIL} (ID: ${adminUserId})`);
-      adminCreated = true;
-    } catch (error: any) {
-      if (error.code === 'auth/email-already-in-use') {
-        console.log(`⚠️  Admin user ${ADMIN_EMAIL} already exists.`);
-        console.log(`   If you need to reset the role, update it in Firestore manually.`);
+      await signInWithEmailAndPassword(auth, ADMIN_EMAIL, ADMIN_PASSWORD);
+      console.log('✅ Authenticated as admin\n');
+    } catch (authError: any) {
+      if (authError.code === 'auth/user-not-found') {
+        console.log('⚠️  Admin user not found. Creating admin user...');
+        try {
+          const userCredential = await createUserWithEmailAndPassword(auth, ADMIN_EMAIL, ADMIN_PASSWORD);
+          await setDoc(doc(db, 'users', userCredential.user.uid), {
+            name: 'Admin User',
+            email: ADMIN_EMAIL,
+            role: 'admin',
+            createdAt: serverTimestamp(),
+          });
+          console.log('✅ Admin user created and authenticated\n');
+        } catch (createError: any) {
+          console.log('⚠️  Could not create admin user:', createError.message);
+          console.log('   Continuing without authentication (may fail due to permissions)...\n');
+        }
+      } else if (authError.code === 'auth/wrong-password' || authError.code === 'auth/invalid-credential') {
+        console.log('⚠️  Invalid admin credentials.');
+        console.log('   Please run: npm run create-admin');
+        console.log('   Or update ADMIN_EMAIL and ADMIN_PASSWORD in seed-database.ts');
+        console.log('   Continuing without authentication (may fail due to permissions)...\n');
       } else {
-        console.error('⚠️  Error creating admin user:', error.message);
-        console.log('   This might be due to Firebase Auth limitations in Node.js environment.');
-        console.log('   Please create the admin user manually (see ADMIN_CREDENTIALS.md)');
+        console.log('⚠️  Authentication error:', authError.message);
+        console.log('   Continuing without authentication (may fail due to permissions)...\n');
       }
     }
 
-    console.log(`\n📋 Admin Credentials (if created):`);
-    console.log(`   Email: ${ADMIN_EMAIL}`);
-    console.log(`   Password: ${ADMIN_PASSWORD}`);
-    console.log(`   Role: admin`);
-    if (!adminCreated) {
-      console.log(`\n   ⚠️  Admin user was not created automatically.`);
-      console.log(`   See ADMIN_CREDENTIALS.md for manual setup instructions.\n`);
-    } else {
-      console.log(`\n`);
-    }
-
+    // Step 0: Delete existing data (if permissions allow)
+    console.log('⚠️  Attempting to delete existing data...\n');
+    await deleteCollection('products');
+    await deleteCollection('pharmacies');
+    
     // Step 1: Create pharmacies
     console.log('📍 Creating pharmacies...');
     const pharmacyIds: string[] = [];

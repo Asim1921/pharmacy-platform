@@ -1,0 +1,42 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // TEMPORARY RULES FOR UPDATING LOCATIONS - REVERT AFTER RUNNING SCRIPT!
+    
+    // Users collection
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Pharmacies collection - TEMPORARILY ALLOW ALL WRITES
+    match /pharmacies/{pharmacyId} {
+      allow read: if true;
+      allow write: if true; // TEMPORARY - allows anyone to write
+    }
+    
+    // Products collection - TEMPORARILY ALLOW ALL WRITES
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if true; // TEMPORARY - allows anyone to write
+    }
+    
+    // Orders collection
+    match /orders/{orderId} {
+      allow read: if request.auth != null && 
+        (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow update: if request.auth != null && 
+        ((resource.data.userId == request.auth.uid && resource.data.status == 'pending') ||
+        isAdmin());
+    }
+    
+    // Helper function (kept for orders)
+    function isAdmin() {
+      return request.auth != null && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+  }
+}
+

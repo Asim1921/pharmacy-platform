@@ -9,7 +9,7 @@ import ProductCard from '@/components/ProductCard';
 import SearchBar from '@/components/SearchBar';
 import { motion } from 'framer-motion';
 import Modal from '@/components/ui/Modal';
-import { X, Package, Calendar, DollarSign, AlertCircle, ChevronLeft, ChevronRight, Sparkles, Search as SearchIcon } from 'lucide-react';
+import { X, Package, Calendar, PoundSterling, AlertCircle, ChevronLeft, ChevronRight, Sparkles, Search as SearchIcon } from 'lucide-react';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import Button from '@/components/ui/Button';
 import { useCartStore } from '@/store/useCartStore';

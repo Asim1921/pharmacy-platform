@@ -1,0 +1,58 @@
+Copy and paste these EXACT rules into Firebase Console:
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to safely check if user is admin
+    function isAdmin() {
+      return request.auth != null && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Pharmacies collection - public read, admin write
+    match /pharmacies/{pharmacyId} {
+      allow read: if true;
+      allow write: if request.auth != null && isAdmin();
+    }
+    
+    // Products collection - public read, admin write, users can update quantity
+    match /products/{productId} {
+      allow read: if true;
+      // Allow authenticated users to update quantity (for order placement/cancellation)
+      allow update: if request.auth != null && 
+        (isAdmin() || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['quantity']));
+      // Only admins can create/delete products
+      allow create, delete: if request.auth != null && isAdmin();
+    }
+    
+    // Orders collection - SIMPLIFIED FOR CANCELLATION
+    match /orders/{orderId} {
+      // Users can read their own orders, admins can read all
+      allow read: if request.auth != null && 
+        (resource.data.userId == request.auth.uid || isAdmin());
+      // Users can create their own orders
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      // SIMPLIFIED: Users can update their own pending orders (no admin check needed for basic case)
+      // This allows cancellation without requiring role lookup
+      allow update: if request.auth != null && 
+        ((resource.data.userId == request.auth.uid && resource.data.status == 'pending') ||
+        isAdmin());
+    }
+  }
+}
+
+INSTRUCTIONS:
+1. Go to Firebase Console → Firestore Database → Rules
+2. Delete ALL existing rules
+3. Paste the rules above
+4. Click PUBLISH
+5. Wait for confirmation
+6. Refresh browser and try canceling order
+
