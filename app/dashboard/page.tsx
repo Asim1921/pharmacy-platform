@@ -260,11 +260,11 @@ export default function DashboardPage() {
 
   const getStatusColor = (status: string) => {
     const colors = {
-      pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 border-yellow-500/30',
-      confirmed: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border-blue-500/30',
-      processing: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400 border-purple-500/30',
-      completed: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border-green-500/30',
-      cancelled: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 border-red-500/30',
+      pending: 'bg-amber-100 text-amber-800 border-amber-300',
+      confirmed: 'bg-blue-100 text-blue-800 border-blue-300',
+      processing: 'bg-purple-100 text-purple-800 border-purple-300',
+      completed: 'bg-green-100 text-green-800 border-green-300',
+      cancelled: 'bg-red-100 text-red-800 border-red-300',
     };
     return colors[status as keyof typeof colors] || colors.pending;
   };
@@ -274,23 +274,23 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-white via-gray-50 to-white">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
             Admin Dashboard
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600">
             Manage pharmacies, products, and orders
           </p>
         </motion.div>
 
         {/* Tabs */}
-        <div className="flex space-x-1 mb-6 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
+        <div className="flex space-x-1 mb-6 bg-gray-100 p-1 rounded-lg">
           {[
             { id: 'pharmacies' as const, label: 'Pharmacies', icon: MapPin },
             { id: 'products' as const, label: 'Products', icon: Package },
@@ -303,12 +303,12 @@ export default function DashboardPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center space-x-2 px-6 py-3 rounded-lg transition-all ${
                   activeTab === tab.id
-                    ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-md'
-                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                    ? 'bg-white text-rose-600 shadow-md font-semibold'
+                    : 'text-gray-600 hover:text-gray-900 font-medium'
                 }`}
               >
                 <Icon size={20} />
-                <span className="font-medium">{tab.label}</span>
+                <span>{tab.label}</span>
               </button>
             );
           })}
@@ -318,7 +318,7 @@ export default function DashboardPage() {
         {activeTab === 'pharmacies' && (
           <div>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              <h2 className="text-2xl font-bold text-gray-900">
                 Pharmacies ({pharmacies.length})
               </h2>
               <Button
@@ -333,11 +333,11 @@ export default function DashboardPage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {pharmacies.map((pharmacy) => (
-                <Card key={pharmacy.id}>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                <Card key={pharmacy.id} className="bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
                     {pharmacy.name}
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  <p className="text-sm text-gray-600 mb-4">
                     {pharmacy.address}, {pharmacy.city}, {pharmacy.state}
                   </p>
                   <div className="flex space-x-2">
@@ -356,6 +356,7 @@ export default function DashboardPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => handleDeletePharmacy(pharmacy.id)}
+                      className="text-red-600 hover:text-red-700 border-red-300 hover:border-red-400 hover:bg-red-50"
                     >
                       <Trash2 className="w-4 h-4 mr-1" />
                       Delete
@@ -371,7 +372,7 @@ export default function DashboardPage() {
         {activeTab === 'products' && (
           <div>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              <h2 className="text-2xl font-bold text-gray-900">
                 Products ({products.length})
               </h2>
               <Button
@@ -384,27 +385,27 @@ export default function DashboardPage() {
                 Add Product
               </Button>
             </div>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto bg-white rounded-xl border border-gray-200 shadow-sm">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-gray-200 dark:border-gray-700">
-                    <th className="text-left p-4 text-gray-900 dark:text-white">Name</th>
-                    <th className="text-left p-4 text-gray-900 dark:text-white">Pharmacy</th>
-                    <th className="text-left p-4 text-gray-900 dark:text-white">Category</th>
-                    <th className="text-left p-4 text-gray-900 dark:text-white">Price</th>
-                    <th className="text-left p-4 text-gray-900 dark:text-white">Quantity</th>
-                    <th className="text-left p-4 text-gray-900 dark:text-white">Actions</th>
+                  <tr className="border-b border-gray-200 bg-gray-50">
+                    <th className="text-left p-4 text-gray-900 font-semibold">Name</th>
+                    <th className="text-left p-4 text-gray-900 font-semibold">Pharmacy</th>
+                    <th className="text-left p-4 text-gray-900 font-semibold">Category</th>
+                    <th className="text-left p-4 text-gray-900 font-semibold">Price</th>
+                    <th className="text-left p-4 text-gray-900 font-semibold">Quantity</th>
+                    <th className="text-left p-4 text-gray-900 font-semibold">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {products.map((product) => (
-                    <tr key={product.id} className="border-b border-gray-200 dark:border-gray-700">
-                      <td className="p-4 text-gray-900 dark:text-white">{product.name}</td>
-                      <td className="p-4 text-gray-600 dark:text-gray-400">{product.pharmacyName}</td>
-                      <td className="p-4 text-gray-600 dark:text-gray-400 capitalize">{product.category.replace('-', ' ')}</td>
-                      <td className="p-4 text-gray-900 dark:text-white">{formatCurrency(product.price)}</td>
+                    <tr key={product.id} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
+                      <td className="p-4 text-gray-900 font-medium">{product.name}</td>
+                      <td className="p-4 text-gray-600">{product.pharmacyName}</td>
+                      <td className="p-4 text-gray-600 capitalize">{product.category.replace('-', ' ')}</td>
+                      <td className="p-4 text-gray-900 font-semibold">{formatCurrency(product.price)}</td>
                       <td className="p-4">
-                        <span className={product.quantity > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}>
+                        <span className={`font-semibold ${product.quantity > 0 ? 'text-green-600' : 'text-red-600'}`}>
                           {product.quantity}
                         </span>
                       </td>
@@ -424,6 +425,7 @@ export default function DashboardPage() {
                             variant="outline"
                             size="sm"
                             onClick={() => handleDeleteProduct(product.id)}
+                            className="text-red-600 hover:text-red-700 border-red-300 hover:border-red-400 hover:bg-red-50"
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
@@ -440,16 +442,16 @@ export default function DashboardPage() {
         {/* Orders Tab */}
         {activeTab === 'orders' && (
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
               Orders ({orders.length})
             </h2>
             <div className="space-y-4">
               {orders.map((order) => (
-                <Card key={order.id}>
+                <Card key={order.id} className="bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-4 mb-4">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                        <h3 className="text-lg font-semibold text-gray-900">
                           Order #{order.id.slice(0, 8)}
                         </h3>
                         <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(order.status)}`}>
@@ -458,16 +460,16 @@ export default function DashboardPage() {
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Date</p>
-                          <p className="text-gray-900 dark:text-white">{formatDate(order.createdAt)}</p>
+                          <p className="text-sm text-gray-600 font-medium">Date</p>
+                          <p className="text-gray-900 font-semibold">{formatDate(order.createdAt)}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Items</p>
-                          <p className="text-gray-900 dark:text-white">{order.items.length}</p>
+                          <p className="text-sm text-gray-600 font-medium">Items</p>
+                          <p className="text-gray-900 font-semibold">{order.items.length}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">Total</p>
-                          <p className="text-gray-900 dark:text-white font-semibold">{formatCurrency(order.totalAmount)}</p>
+                          <p className="text-sm text-gray-600 font-medium">Total</p>
+                          <p className="text-rose-600 font-bold text-lg">{formatCurrency(order.totalAmount)}</p>
                         </div>
                       </div>
                     </div>
@@ -564,14 +566,14 @@ export default function DashboardPage() {
       >
         <form onSubmit={handleSaveProduct} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Pharmacy
             </label>
             <select
               name="pharmacyId"
               defaultValue={editingProduct?.pharmacyId}
               required
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500/50 focus:border-rose-500"
             >
               <option value="">Select Pharmacy</option>
               {pharmacies.map((pharmacy) => (
@@ -583,14 +585,14 @@ export default function DashboardPage() {
           </div>
           <Input label="Product Name" name="name" defaultValue={editingProduct?.name} required />
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Category
             </label>
             <select
               name="category"
               defaultValue={editingProduct?.category}
               required
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500/50 focus:border-rose-500"
             >
               {categories.map((cat) => (
                 <option key={cat} value={cat}>
@@ -606,46 +608,46 @@ export default function DashboardPage() {
           <Input label="Dosage" name="dosage" defaultValue={editingProduct?.dosage} />
           <Input label="Expiry Date" name="expiryDate" type="date" defaultValue={editingProduct?.expiryDate ? new Date(editingProduct.expiryDate).toISOString().split('T')[0] : ''} required />
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Description
             </label>
             <textarea
               name="description"
               defaultValue={editingProduct?.description}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500/50 focus:border-rose-500"
               rows={3}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Usage
             </label>
             <textarea
               name="usage"
               defaultValue={editingProduct?.usage}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500/50 focus:border-rose-500"
               rows={2}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Side Effects
             </label>
             <textarea
               name="sideEffects"
               defaultValue={editingProduct?.sideEffects}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500/50 focus:border-rose-500"
               rows={2}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Health Information
             </label>
             <textarea
               name="healthInfo"
               defaultValue={editingProduct?.healthInfo}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500/50 focus:border-rose-500"
               rows={2}
             />
           </div>
@@ -679,48 +681,48 @@ export default function DashboardPage() {
         {selectedOrder && (
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-4">
-                <p className="text-xs font-medium text-slate-400 mb-1 uppercase tracking-wide">Status</p>
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                <p className="text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">Status</p>
                 <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(selectedOrder.status)}`}>
                   {selectedOrder.status.charAt(0).toUpperCase() + selectedOrder.status.slice(1)}
                 </span>
               </div>
-              <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-4">
-                <p className="text-xs font-medium text-slate-400 mb-1 uppercase tracking-wide">Date</p>
-                <p className="text-lg font-medium text-white">{formatDate(selectedOrder.createdAt)}</p>
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                <p className="text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">Date</p>
+                <p className="text-lg font-medium text-gray-900">{formatDate(selectedOrder.createdAt)}</p>
               </div>
             </div>
             
             <div>
-              <p className="text-sm font-medium text-slate-400 mb-3 uppercase tracking-wide">Order Items</p>
+              <p className="text-sm font-medium text-gray-600 mb-3 uppercase tracking-wide">Order Items</p>
               <div className="space-y-2 max-h-64 overflow-y-auto custom-scrollbar">
                 {selectedOrder.items.map((item, index) => (
-                  <div key={index} className="flex justify-between p-4 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl hover:border-emerald-500/50 transition-colors">
+                  <div key={index} className="flex justify-between p-4 bg-gray-50 border border-gray-200 rounded-xl hover:border-rose-300 transition-colors">
                     <div className="flex-1">
-                      <p className="font-semibold text-white mb-1">{item.productName}</p>
-                      <div className="flex items-center gap-3 text-sm text-slate-400">
+                      <p className="font-semibold text-gray-900 mb-1">{item.productName}</p>
+                      <div className="flex items-center gap-3 text-sm text-gray-600">
                         <span>{item.pharmacyName}</span>
                         <span>•</span>
                         <span>Qty: {item.quantity}</span>
                       </div>
                     </div>
-                    <p className="font-bold text-emerald-400 ml-4">{formatCurrency(item.price * item.quantity)}</p>
+                    <p className="font-bold text-rose-600 ml-4">{formatCurrency(item.price * item.quantity)}</p>
                   </div>
                 ))}
               </div>
             </div>
             
-            <div className="pt-4 border-t border-slate-700/50">
+            <div className="pt-4 border-t border-gray-200">
               <div className="flex justify-between items-center mb-4">
-                <span className="text-lg font-semibold text-white">Total Amount</span>
-                <span className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                <span className="text-lg font-semibold text-gray-900">Total Amount</span>
+                <span className="text-2xl font-bold bg-gradient-to-r from-rose-500 to-teal-500 bg-clip-text text-transparent">
                   {formatCurrency(selectedOrder.totalAmount)}
                 </span>
               </div>
 
               {/* Accept/Reject Buttons for Pending Orders */}
               {canManageOrder(selectedOrder) && (
-                <div className="flex gap-3 pt-4 border-t border-slate-700/50">
+                <div className="flex gap-3 pt-4 border-t border-gray-200">
                   <Button
                     onClick={() => {
                       handleAcceptOrder(selectedOrder);

@@ -34,7 +34,7 @@ export default function SearchBar({ onSearch, categories }: SearchBarProps) {
     <div className="w-full max-w-4xl mx-auto space-y-4">
       <div className="flex gap-3">
         <div className="flex-1 relative">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-500 z-10" size={20} />
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 z-10" size={20} />
           <Input
             placeholder="Search by product name..."
             value={searchQuery}
@@ -45,7 +45,7 @@ export default function SearchBar({ onSearch, categories }: SearchBarProps) {
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors z-10"
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors z-10"
             >
               <X size={18} />
             </button>
@@ -53,7 +53,7 @@ export default function SearchBar({ onSearch, categories }: SearchBarProps) {
         </div>
         <button
           onClick={handleSearch}
-          className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl hover:from-emerald-600 hover:to-teal-600 transition-all duration-200 shadow-lg shadow-emerald-500/25 font-medium"
+          className="px-6 py-3 bg-gradient-to-r from-rose-500 to-teal-500 text-white rounded-xl hover:from-rose-600 hover:to-teal-600 transition-all duration-200 shadow-lg shadow-rose-500/25 font-medium"
         >
           Search
         </button>
@@ -64,11 +64,11 @@ export default function SearchBar({ onSearch, categories }: SearchBarProps) {
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value as ProductCategory | '')}
-            className="w-full px-4 py-3 rounded-xl border border-slate-700/50 bg-slate-800/50 backdrop-blur-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all duration-200 hover:border-slate-600"
+            className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500/50 focus:border-rose-500 transition-all duration-200 hover:border-gray-400 shadow-sm"
           >
-            <option value="" className="bg-slate-800">All Categories</option>
+            <option value="" className="bg-white text-gray-900">All Categories</option>
             {categories.map((cat) => (
-              <option key={cat} value={cat} className="bg-slate-800">
+              <option key={cat} value={cat} className="bg-white text-gray-900">
                 {cat.charAt(0).toUpperCase() + cat.slice(1).replace('-', ' ')}
               </option>
             ))}
@@ -87,7 +87,7 @@ export default function SearchBar({ onSearch, categories }: SearchBarProps) {
         {(searchQuery || selectedCategory || location) && (
           <button
             onClick={handleClear}
-            className="px-4 py-3 text-slate-400 hover:text-slate-200 transition-colors border border-slate-700/50 rounded-xl hover:bg-slate-800/50"
+            className="px-4 py-3 text-gray-600 hover:text-gray-900 transition-colors border border-gray-300 rounded-xl hover:bg-gray-50 bg-white shadow-sm"
           >
             Clear Filters
           </button>

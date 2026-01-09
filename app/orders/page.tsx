@@ -134,11 +134,11 @@ export default function OrdersPage() {
 
   const getStatusColor = (status: string) => {
     const colors = {
-      pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-      confirmed: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-      processing: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-      completed: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-      cancelled: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+      pending: 'bg-amber-100 text-amber-800 border-amber-300',
+      confirmed: 'bg-blue-100 text-blue-800 border-blue-300',
+      processing: 'bg-purple-100 text-purple-800 border-purple-300',
+      completed: 'bg-green-100 text-green-800 border-green-300',
+      cancelled: 'bg-red-100 text-red-800 border-red-300',
     };
     return colors[status as keyof typeof colors] || colors.pending;
   };
@@ -146,34 +146,34 @@ export default function OrdersPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-white via-gray-50 to-white">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
             My Orders
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600">
             View your order history and track current orders
           </p>
         </motion.div>
 
         {orders.length === 0 ? (
-          <Card className="text-center py-12">
+          <Card className="text-center py-12 bg-white border border-gray-200 shadow-sm">
             <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
               No orders yet
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+            <p className="text-gray-600 mb-6">
               Start shopping to see your orders here
             </p>
             <Button onClick={() => router.push('/products')}>
@@ -189,29 +189,29 @@ export default function OrdersPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
               >
-                <Card className="p-6">
+                <Card className="p-6 bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-4 mb-4">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                        <h3 className="text-lg font-semibold text-gray-900">
                           Order #{order.id.slice(0, 8)}
                         </h3>
-                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
+                        <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(order.status)}`}>
                           {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                         </span>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="flex items-center text-gray-600 dark:text-gray-400">
-                          <Calendar className="w-5 h-5 mr-2" />
-                          <span>{formatDate(order.createdAt)}</span>
+                        <div className="flex items-center text-gray-700">
+                          <Calendar className="w-5 h-5 mr-2 text-gray-600" />
+                          <span className="font-medium">{formatDate(order.createdAt)}</span>
                         </div>
-                        <div className="flex items-center text-gray-600 dark:text-gray-400">
-                          <Package className="w-5 h-5 mr-2" />
-                          <span>{order.items.length} {order.items.length === 1 ? 'item' : 'items'}</span>
+                        <div className="flex items-center text-gray-700">
+                          <Package className="w-5 h-5 mr-2 text-gray-600" />
+                          <span className="font-medium">{order.items.length} {order.items.length === 1 ? 'item' : 'items'}</span>
                         </div>
-                        <div className="flex items-center text-gray-900 dark:text-white font-semibold">
-                          <PoundSterling className="w-5 h-5 mr-2" />
-                          <span>{formatCurrency(order.totalAmount)}</span>
+                        <div className="flex items-center text-gray-900 font-semibold">
+                          <PoundSterling className="w-5 h-5 mr-2 text-rose-600" />
+                          <span className="text-lg">{formatCurrency(order.totalAmount)}</span>
                         </div>
                       </div>
                     </div>
@@ -227,7 +227,7 @@ export default function OrdersPage() {
                         <Button
                           variant="outline"
                           onClick={() => handleCancelOrder(order)}
-                          className="text-red-600 hover:text-red-700 border-red-300 hover:border-red-400 dark:text-red-400 dark:border-red-600"
+                          className="text-red-600 hover:text-red-700 border-red-300 hover:border-red-400 hover:bg-red-50"
                         >
                           <X className="w-4 h-4 mr-2" />
                           Cancel
@@ -252,36 +252,36 @@ export default function OrdersPage() {
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Status</p>
-                <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(selectedOrder.status)}`}>
+                <p className="text-sm text-gray-600 mb-1 font-medium">Status</p>
+                <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(selectedOrder.status)}`}>
                   {selectedOrder.status.charAt(0).toUpperCase() + selectedOrder.status.slice(1)}
                 </span>
               </div>
               <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Date</p>
-                <p className="text-lg font-medium text-gray-900 dark:text-white">
+                <p className="text-sm text-gray-600 mb-1 font-medium">Date</p>
+                <p className="text-lg font-semibold text-gray-900">
                   {formatDate(selectedOrder.createdAt)}
                 </p>
               </div>
             </div>
 
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Items</p>
+              <p className="text-sm text-gray-600 mb-2 font-medium">Items</p>
               <div className="space-y-2">
                 {selectedOrder.items.map((item, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                    className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
                   >
                     <div>
-                      <p className="font-medium text-gray-900 dark:text-white">
+                      <p className="font-semibold text-gray-900">
                         {item.productName}
                       </p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <p className="text-sm text-gray-600">
                         {item.pharmacyName} • Qty: {item.quantity}
                       </p>
                     </div>
-                    <p className="font-semibold text-gray-900 dark:text-white">
+                    <p className="font-bold text-rose-600 text-lg">
                       {formatCurrency(item.price * item.quantity)}
                     </p>
                   </div>
@@ -289,10 +289,10 @@ export default function OrdersPage() {
               </div>
             </div>
 
-            <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="pt-4 border-t border-gray-200">
               <div className="flex justify-between items-center mb-4">
-                <span className="text-lg font-semibold text-gray-900 dark:text-white">Total</span>
-                <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                <span className="text-lg font-semibold text-gray-900">Total</span>
+                <span className="text-2xl font-bold bg-gradient-to-r from-rose-500 to-teal-500 bg-clip-text text-transparent">
                   {formatCurrency(selectedOrder.totalAmount)}
                 </span>
               </div>
@@ -302,7 +302,7 @@ export default function OrdersPage() {
                   onClick={() => {
                     handleCancelOrder(selectedOrder);
                   }}
-                  className="w-full text-red-600 hover:text-red-700 border-red-300 hover:border-red-400 dark:text-red-400 dark:border-red-600"
+                  className="w-full text-red-600 hover:text-red-700 border-red-300 hover:border-red-400 hover:bg-red-50"
                 >
                   <X className="w-4 h-4 mr-2" />
                   Cancel Order

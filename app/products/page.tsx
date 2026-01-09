@@ -169,22 +169,22 @@ export default function ProductsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-gray-50 to-white">
         <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
-          <p className="text-slate-400">Loading products...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-500"></div>
+          <p className="text-gray-600">Loading products...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-white py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl animate-pulse delay-2000" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-rose-200/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-teal-200/20 rounded-full blur-3xl animate-pulse delay-1000" />
+        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-amber-200/20 rounded-full blur-3xl animate-pulse delay-2000" />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
@@ -195,16 +195,16 @@ export default function ProductsPage() {
           className="mb-8"
         >
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/25">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-500 to-teal-500 flex items-center justify-center shadow-lg shadow-rose-500/25">
               <Package className="w-6 h-6 text-white" />
             </div>
             <div>
               <h1 className="text-4xl sm:text-5xl font-bold mb-1">
-                <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-violet-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-rose-500 via-teal-500 to-amber-500 bg-clip-text text-transparent">
                   Browse Products
                 </span>
               </h1>
-              <p className="text-slate-400 text-sm">
+              <p className="text-gray-600 text-sm">
                 Discover medications and health products
               </p>
             </div>
@@ -218,14 +218,14 @@ export default function ProductsPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="text-center py-16"
           >
-            <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-slate-800/50 border border-slate-700/50 mb-6">
-              <Package className="w-12 h-12 text-slate-500" />
+            <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gray-100 border border-gray-200 mb-6">
+              <Package className="w-12 h-12 text-gray-400" />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2">No products found</h2>
-            <p className="text-slate-400 mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">No products found</h2>
+            <p className="text-gray-600 mb-6">
               Try adjusting your search criteria or filters
             </p>
-            <SearchIcon className="w-8 h-8 text-slate-600 mx-auto" />
+            <SearchIcon className="w-8 h-8 text-gray-400 mx-auto" />
           </motion.div>
         ) : (
           <>
@@ -234,8 +234,8 @@ export default function ProductsPage() {
               animate={{ opacity: 1, y: 0 }}
               className="mb-6 flex items-center justify-between"
             >
-              <div className="px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
-                <p className="text-sm font-medium text-emerald-400">
+              <div className="px-4 py-2 bg-rose-100 border border-rose-200 rounded-lg">
+                <p className="text-sm font-medium text-rose-700">
                   Showing {startIndex + 1} - {Math.min(endIndex, filteredProducts.length)} of {filteredProducts.length} products
                 </p>
               </div>
@@ -263,13 +263,13 @@ export default function ProductsPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center justify-center gap-2 mt-8 pt-8 border-t border-slate-700/50"
+                className="flex items-center justify-center gap-2 mt-8 pt-8 border-t border-gray-200"
               >
                 <Button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
                   variant="outline"
-                  className="flex items-center gap-2 border-slate-600 text-slate-300 hover:bg-slate-800 disabled:opacity-30"
+                  className="flex items-center gap-2 border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-30"
                 >
                   <ChevronLeft className="w-4 h-4" />
                   Previous
@@ -293,15 +293,15 @@ export default function ProductsPage() {
                       return (
                         <div key={page} className="flex items-center gap-1">
                           {showEllipsis && (
-                            <span className="px-2 text-slate-500">...</span>
+                            <span className="px-2 text-gray-500">...</span>
                           )}
                           <Button
                             onClick={() => handlePageChange(page)}
                             variant={currentPage === page ? "primary" : "outline"}
                             className={`min-w-[40px] ${
                               currentPage === page
-                                ? 'bg-gradient-to-r from-emerald-500 to-teal-500 border-0 text-white shadow-lg shadow-emerald-500/25'
-                                : 'border-slate-600 text-slate-300 hover:bg-slate-800'
+                                ? 'bg-gradient-to-r from-rose-500 to-teal-500 border-0 text-white shadow-lg shadow-rose-500/25'
+                                : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                             }`}
                           >
                             {page}
@@ -315,7 +315,7 @@ export default function ProductsPage() {
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
                   variant="outline"
-                  className="flex items-center gap-2 border-slate-600 text-slate-300 hover:bg-slate-800 disabled:opacity-30"
+                  className="flex items-center gap-2 border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-30"
                 >
                   Next
                   <ChevronRight className="w-4 h-4" />
@@ -335,25 +335,25 @@ export default function ProductsPage() {
         {selectedProduct && (
           <div className="space-y-4">
             {/* Price and Stock Header */}
-            <div className="grid grid-cols-2 gap-4 pb-4 border-b border-slate-700/50">
-              <div className="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-xl p-4 border border-emerald-500/20">
-                <p className="text-xs font-medium text-emerald-400 mb-1 uppercase tracking-wide">Price</p>
-                <p className="text-2xl font-bold text-emerald-400">
+            <div className="grid grid-cols-2 gap-4 pb-4 border-b border-gray-200">
+              <div className="bg-gradient-to-br from-rose-50 to-pink-50 rounded-xl p-4 border border-rose-200">
+                <p className="text-xs font-medium text-rose-600 mb-1 uppercase tracking-wide">Price</p>
+                <p className="text-2xl font-bold text-rose-600">
                   {formatCurrency(selectedProduct.price)}
                 </p>
               </div>
               <div className={`rounded-xl p-4 border ${
                 selectedProduct.quantity > 0 
-                  ? 'bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/20' 
-                  : 'bg-gradient-to-br from-red-500/10 to-orange-500/10 border-red-500/20'
+                  ? 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-200' 
+                  : 'bg-gradient-to-br from-red-50 to-orange-50 border-red-200'
               }`}>
-                <p className="text-xs font-medium text-slate-400 mb-1 uppercase tracking-wide">Stock</p>
+                <p className="text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">Stock</p>
                 <p className={`text-2xl font-bold ${
-                  selectedProduct.quantity > 0 ? 'text-green-400' : 'text-red-400'
+                  selectedProduct.quantity > 0 ? 'text-green-600' : 'text-red-600'
                 }`}>
                   {selectedProduct.quantity}
                 </p>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-gray-500 mt-1">
                   {selectedProduct.quantity > 0 ? 'available' : 'out of stock'}
                 </p>
               </div>
@@ -361,33 +361,33 @@ export default function ProductsPage() {
 
             {/* Product Info Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-3">
-                <p className="text-xs font-medium text-slate-400 mb-1 uppercase tracking-wide">Category</p>
-                <p className="text-sm font-semibold text-white capitalize">
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-3">
+                <p className="text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">Category</p>
+                <p className="text-sm font-semibold text-gray-900 capitalize">
                   {selectedProduct.category.replace('-', ' ')}
                 </p>
               </div>
 
               {selectedProduct.dosage && (
-                <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-3">
-                  <p className="text-xs font-medium text-slate-400 mb-1 uppercase tracking-wide">Dosage</p>
-                  <p className="text-sm font-semibold text-white">{selectedProduct.dosage}</p>
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-3">
+                  <p className="text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">Dosage</p>
+                  <p className="text-sm font-semibold text-gray-900">{selectedProduct.dosage}</p>
                 </div>
               )}
 
-              <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-3">
-                <p className="text-xs font-medium text-slate-400 mb-1 uppercase tracking-wide">Expiry Date</p>
-                <p className="text-sm font-semibold text-white">
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-3">
+                <p className="text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">Expiry Date</p>
+                <p className="text-sm font-semibold text-gray-900">
                   {formatDate(selectedProduct.expiryDate)}
                 </p>
               </div>
 
-              <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-3">
-                <p className="text-xs font-medium text-slate-400 mb-1 uppercase tracking-wide">Pharmacy</p>
-                <p className="text-sm font-semibold text-white">
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-3">
+                <p className="text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">Pharmacy</p>
+                <p className="text-sm font-semibold text-gray-900">
                   {selectedProduct.pharmacy.name}
                 </p>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-gray-500 mt-0.5">
                   {selectedProduct.pharmacy.city}, {selectedProduct.pharmacy.state}
                 </p>
               </div>
@@ -395,9 +395,9 @@ export default function ProductsPage() {
 
             {/* Description and Details */}
             {selectedProduct.description && (
-              <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-4">
-                <p className="text-xs font-medium text-slate-400 mb-2 uppercase tracking-wide">Description</p>
-                <p className="text-sm text-slate-300 leading-relaxed">{selectedProduct.description}</p>
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                <p className="text-xs font-medium text-gray-600 mb-2 uppercase tracking-wide">Description</p>
+                <p className="text-sm text-gray-700 leading-relaxed">{selectedProduct.description}</p>
               </div>
             )}
 
@@ -405,35 +405,35 @@ export default function ProductsPage() {
             {(selectedProduct.usage || selectedProduct.sideEffects || selectedProduct.healthInfo) && (
               <div className="space-y-3 pt-2">
                 {selectedProduct.usage && (
-                  <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-xl p-3 border-l-4 border-l-cyan-500">
-                    <p className="text-xs font-medium text-cyan-400 mb-1 uppercase tracking-wide">Usage Instructions</p>
-                    <p className="text-sm text-slate-300">{selectedProduct.usage}</p>
+                  <div className="bg-teal-50 border border-teal-200 rounded-xl p-3 border-l-4 border-l-teal-500">
+                    <p className="text-xs font-medium text-teal-700 mb-1 uppercase tracking-wide">Usage Instructions</p>
+                    <p className="text-sm text-gray-700">{selectedProduct.usage}</p>
                   </div>
                 )}
 
                 {selectedProduct.sideEffects && (
-                  <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 border-l-4 border-l-amber-500">
-                    <p className="text-xs font-medium text-amber-400 mb-1 uppercase tracking-wide">Side Effects</p>
-                    <p className="text-sm text-slate-300">{selectedProduct.sideEffects}</p>
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 border-l-4 border-l-amber-500">
+                    <p className="text-xs font-medium text-amber-700 mb-1 uppercase tracking-wide">Side Effects</p>
+                    <p className="text-sm text-gray-700">{selectedProduct.sideEffects}</p>
                   </div>
                 )}
 
                 {selectedProduct.healthInfo && (
-                  <div className="bg-violet-500/10 border border-violet-500/20 rounded-xl p-3 border-l-4 border-l-violet-500">
-                    <p className="text-xs font-medium text-violet-400 mb-1 uppercase tracking-wide">Health Information</p>
-                    <p className="text-sm text-slate-300">{selectedProduct.healthInfo}</p>
+                  <div className="bg-rose-50 border border-rose-200 rounded-xl p-3 border-l-4 border-l-rose-500">
+                    <p className="text-xs font-medium text-rose-700 mb-1 uppercase tracking-wide">Health Information</p>
+                    <p className="text-sm text-gray-700">{selectedProduct.healthInfo}</p>
                   </div>
                 )}
               </div>
             )}
 
             {/* Add to Cart Button */}
-            <div className="pt-4 border-t border-slate-700/50">
+            <div className="pt-4 border-t border-gray-200">
               <Button
                 className={`w-full ${
                   selectedProduct.quantity > 0
-                    ? 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0 shadow-lg shadow-emerald-500/25'
-                    : 'bg-slate-800 text-slate-500 border-slate-700 cursor-not-allowed'
+                    ? 'bg-gradient-to-r from-rose-500 to-teal-500 hover:from-rose-600 hover:to-teal-600 text-white border-0 shadow-lg shadow-rose-500/25'
+                    : 'bg-gray-200 text-gray-500 border-gray-300 cursor-not-allowed'
                 }`}
                 onClick={handleAddToCart}
                 disabled={selectedProduct.quantity === 0}

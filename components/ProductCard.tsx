@@ -49,28 +49,28 @@ export default function ProductCard({ product, pharmacy, onViewDetails }: Produc
   };
 
   const categoryColors = {
-    prescription: 'bg-red-500/20 text-red-400 border-red-500/30',
-    'over-the-counter': 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
-    wellness: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-    vitamins: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-    supplements: 'bg-violet-500/20 text-violet-400 border-violet-500/30',
+    prescription: 'bg-red-100 text-red-700 border-red-200',
+    'over-the-counter': 'bg-teal-100 text-teal-700 border-teal-200',
+    wellness: 'bg-rose-100 text-rose-700 border-rose-200',
+    vitamins: 'bg-amber-100 text-amber-700 border-amber-200',
+    supplements: 'bg-pink-100 text-pink-700 border-pink-200',
   };
 
   return (
     <motion.div
       whileHover={{ y: -4 }}
       transition={{ duration: 0.2 }}
-      className="h-full flex flex-col bg-slate-900/80 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-5 hover:border-emerald-500/50 hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-200 cursor-pointer group"
+      className="h-full flex flex-col bg-white backdrop-blur-xl rounded-2xl border border-gray-200 p-5 hover:border-rose-300 hover:shadow-xl hover:shadow-rose-500/10 transition-all duration-200 cursor-pointer group"
       onClick={onViewDetails}
     >
       <div className="flex-1">
         {/* Header */}
         <div className="flex items-start justify-between mb-4 gap-2">
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-bold text-white mb-2 line-clamp-2 group-hover:text-emerald-400 transition-colors">
+            <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-rose-600 transition-colors">
               {product.name}
             </h3>
-            <div className="flex items-center gap-2 text-xs text-slate-400">
+            <div className="flex items-center gap-2 text-xs text-gray-600">
               <MapPin className="w-3 h-3" />
               <span className="truncate">{pharmacy.name}</span>
             </div>
@@ -82,9 +82,9 @@ export default function ProductCard({ product, pharmacy, onViewDetails }: Produc
 
         {/* Price */}
         <div className="mb-4">
-          <div className="inline-flex items-center gap-2 px-3 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
-            <PoundSterling className="w-4 h-4 text-emerald-400" />
-            <span className="text-xl font-bold text-emerald-400">
+          <div className="inline-flex items-center gap-2 px-3 py-2 bg-rose-50 border border-rose-200 rounded-lg">
+            <PoundSterling className="w-4 h-4 text-rose-600" />
+            <span className="text-xl font-bold text-rose-600">
               {formatCurrency(product.price)}
             </span>
           </div>
@@ -93,41 +93,41 @@ export default function ProductCard({ product, pharmacy, onViewDetails }: Produc
         {/* Details */}
         <div className="space-y-2 mb-4">
           {product.dosage && (
-            <div className="flex items-center gap-2 text-sm text-slate-400">
-              <Package className="w-4 h-4 text-slate-500" />
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <Package className="w-4 h-4 text-gray-500" />
               <span>{product.dosage}</span>
             </div>
           )}
 
-          <div className="flex items-center gap-2 text-sm text-slate-400">
-            <Calendar className="w-4 h-4 text-slate-500" />
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <Calendar className="w-4 h-4 text-gray-500" />
             <span>Exp: {formatDate(product.expiryDate)}</span>
           </div>
 
           <div className="flex items-center gap-2">
             <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium ${
               product.quantity > 0
-                ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                ? 'bg-green-100 text-green-700 border border-green-200'
+                : 'bg-red-100 text-red-700 border border-red-200'
             }`}>
-              <div className={`w-2 h-2 rounded-full ${product.quantity > 0 ? 'bg-green-400' : 'bg-red-400'}`} />
+              <div className={`w-2 h-2 rounded-full ${product.quantity > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
               {product.quantity > 0 ? `${product.quantity} in stock` : 'Out of stock'}
             </span>
           </div>
         </div>
 
         {product.description && (
-          <p className="text-sm text-slate-400 line-clamp-2 mb-4">
+          <p className="text-sm text-gray-600 line-clamp-2 mb-4">
             {product.description}
           </p>
         )}
       </div>
 
       {/* Actions */}
-      <div className="flex gap-2 pt-4 border-t border-slate-700/50">
+      <div className="flex gap-2 pt-4 border-t border-gray-200">
         <Button
           variant="outline"
-          className="flex-1 border-slate-600 text-slate-300 hover:bg-slate-800 hover:border-slate-500"
+          className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400"
           onClick={(e) => {
             e.stopPropagation();
             onViewDetails?.();
@@ -138,8 +138,8 @@ export default function ProductCard({ product, pharmacy, onViewDetails }: Produc
         <Button
           className={`flex-1 ${
             product.quantity > 0
-              ? 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0 shadow-lg shadow-emerald-500/25'
-              : 'bg-slate-800 text-slate-500 border-slate-700 cursor-not-allowed'
+              ? 'bg-gradient-to-r from-rose-500 to-teal-500 hover:from-rose-600 hover:to-teal-600 text-white border-0 shadow-lg shadow-rose-500/25'
+              : 'bg-gray-200 text-gray-500 border-gray-300 cursor-not-allowed'
           }`}
           onClick={handleAddToCart}
           disabled={product.quantity === 0}

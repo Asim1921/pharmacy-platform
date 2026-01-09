@@ -83,17 +83,17 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-white via-gray-50 to-white">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className="text-center"
         >
           <ShoppingBag className="w-24 h-24 text-gray-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
             Your cart is empty
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
+          <p className="text-gray-600 mb-6">
             Add some products to get started
           </p>
           <Button onClick={() => router.push('/products')}>
@@ -105,17 +105,17 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-white via-gray-50 to-white">
       <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
             Shopping Cart
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600">
             {items.length} {items.length === 1 ? 'item' : 'items'} in your cart
           </p>
         </motion.div>
@@ -129,33 +129,33 @@ export default function CartPage() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="p-6">
+                <Card className="p-6 bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
                         {item.productName}
                       </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                      <p className="text-sm text-gray-600 mb-2">
                         {item.pharmacyName}
                       </p>
-                      <p className="text-lg font-bold text-gray-900 dark:text-white">
+                      <p className="text-lg font-bold text-rose-600">
                         {formatCurrency(item.price)}
                       </p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      <p className="text-sm text-gray-500 mt-1">
                         {item.availableQuantity} available
                       </p>
                     </div>
 
                     <div className="flex items-center space-x-4">
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2 bg-gray-50 rounded-lg p-1 border border-gray-200">
                         <button
                           onClick={() => updateQuantity(item.productId, item.quantity - 1)}
                           disabled={item.quantity <= 1}
-                          className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="p-1 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 hover:text-gray-900 transition-colors"
                         >
                           <Minus size={18} />
                         </button>
-                        <span className="w-12 text-center font-medium text-gray-900 dark:text-white">
+                        <span className="w-12 text-center font-semibold text-gray-900">
                           {item.quantity}
                         </span>
                         <button
@@ -167,7 +167,7 @@ export default function CartPage() {
                             }
                           }}
                           disabled={item.quantity >= item.availableQuantity}
-                          className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="p-1 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 hover:text-gray-900 transition-colors"
                         >
                           <Plus size={18} />
                         </button>
@@ -175,16 +175,16 @@ export default function CartPage() {
 
                       <button
                         onClick={() => removeItem(item.productId)}
-                        className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-red-200 hover:border-red-300"
                       >
                         <Trash2 size={20} />
                       </button>
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                    <p className="text-right text-lg font-semibold text-gray-900 dark:text-white">
-                      Subtotal: {formatCurrency(item.price * item.quantity)}
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <p className="text-right text-lg font-semibold text-gray-900">
+                      Subtotal: <span className="text-rose-600">{formatCurrency(item.price * item.quantity)}</span>
                     </p>
                   </div>
                 </Card>
@@ -197,23 +197,25 @@ export default function CartPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
             >
-              <Card className="sticky top-24">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              <Card className="sticky top-24 bg-white border border-gray-200 shadow-lg">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">
                   Order Summary
                 </h2>
-                <div className="space-y-2 mb-6">
-                  <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                    <span>Subtotal</span>
-                    <span>{formatCurrency(getTotal())}</span>
+                <div className="space-y-3 mb-6">
+                  <div className="flex justify-between text-gray-700">
+                    <span className="font-medium">Subtotal</span>
+                    <span className="font-semibold">{formatCurrency(getTotal())}</span>
                   </div>
-                  <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                    <span>Tax</span>
-                    <span>{formatCurrency(getTotal() * 0.1)}</span>
+                  <div className="flex justify-between text-gray-700">
+                    <span className="font-medium">Tax</span>
+                    <span className="font-semibold">{formatCurrency(getTotal() * 0.1)}</span>
                   </div>
-                  <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-                    <div className="flex justify-between text-lg font-bold text-gray-900 dark:text-white">
-                      <span>Total</span>
-                      <span>{formatCurrency(getTotal() * 1.1)}</span>
+                  <div className="pt-4 border-t border-gray-200">
+                    <div className="flex justify-between text-lg font-bold">
+                      <span className="text-gray-900">Total</span>
+                      <span className="bg-gradient-to-r from-rose-500 to-teal-500 bg-clip-text text-transparent">
+                        {formatCurrency(getTotal() * 1.1)}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -225,7 +227,7 @@ export default function CartPage() {
                   {user ? 'Proceed to Checkout' : 'Login to Checkout'}
                 </Button>
                 {!user && (
-                  <p className="mt-2 text-sm text-center text-gray-600 dark:text-gray-400">
+                  <p className="mt-2 text-sm text-center text-gray-600">
                     Please login to complete your order
                   </p>
                 )}

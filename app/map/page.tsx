@@ -197,27 +197,27 @@ export default function MapPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-gray-50 to-white">
         <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
-          <p className="text-slate-400">Loading pharmacies...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-500"></div>
+          <p className="text-gray-600">Loading pharmacies...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-white">
       <div className="h-screen relative overflow-hidden">
         {/* Animated Background Overlay */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute top-0 right-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+          <div className="absolute top-0 right-1/4 w-96 h-96 bg-rose-200/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-teal-200/20 rounded-full blur-3xl animate-pulse delay-1000" />
         </div>
 
         {/* Sidebar - Modern Glassmorphism Design */}
         <motion.div 
-          className={`absolute top-4 left-4 z-[1000] bg-slate-900/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-700/50 overflow-hidden transition-all duration-300 ${
+          className={`absolute top-4 left-4 z-[1000] bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200 overflow-hidden transition-all duration-300 ${
             isSidebarMinimized ? 'w-14' : 'max-w-sm w-[360px]'
           }`}
           initial={false}
@@ -226,13 +226,13 @@ export default function MapPage() {
           {/* Minimize/Expand Button */}
           <button
             onClick={() => setIsSidebarMinimized(!isSidebarMinimized)}
-            className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800/80 hover:bg-slate-700/80 border border-slate-600/50 hover:border-emerald-500/50 transition-all duration-200 group"
+            className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 border border-gray-300 hover:border-rose-400 transition-all duration-200 group"
             title={isSidebarMinimized ? 'Expand sidebar' : 'Minimize sidebar'}
           >
             {isSidebarMinimized ? (
-              <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-400 transition-colors" />
+              <ChevronRight className="w-4 h-4 text-gray-600 group-hover:text-rose-600 transition-colors" />
             ) : (
-              <ChevronLeft className="w-4 h-4 text-slate-400 group-hover:text-emerald-400 transition-colors" />
+              <ChevronLeft className="w-4 h-4 text-gray-600 group-hover:text-rose-600 transition-colors" />
             )}
           </button>
 
@@ -245,21 +245,21 @@ export default function MapPage() {
               className="p-5"
             >
               <div className="flex items-center gap-2 mb-3 pr-8">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-rose-500 to-teal-500 flex items-center justify-center">
                   <MapPin className="w-5 h-5 text-white" />
                 </div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-rose-500 to-teal-500 bg-clip-text text-transparent">
                   Find Pharmacies
                 </h1>
               </div>
               
-              <p className="text-sm text-slate-400 mb-4">
+              <p className="text-sm text-gray-600 mb-4">
                 Click on a marker to view pharmacy details and products
               </p>
               
               {pharmacies.length > 0 && (
-                <div className="px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-lg mb-4">
-                  <p className="text-xs font-medium text-emerald-400">
+                <div className="px-3 py-1.5 bg-rose-100 border border-rose-200 rounded-lg mb-4">
+                  <p className="text-xs font-medium text-rose-700">
                     Showing {startPharmacyIndex + 1} - {Math.min(endPharmacyIndex, pharmacies.length)} of {pharmacies.length} pharmacies
                   </p>
                 </div>
@@ -273,19 +273,19 @@ export default function MapPage() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
                     whileHover={{ scale: 1.02, x: 4 }}
-                    className="group p-3 bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 rounded-xl cursor-pointer hover:border-emerald-500/50 hover:bg-slate-800/80 transition-all duration-200"
+                    className="group p-3 bg-gray-50 backdrop-blur-sm border border-gray-200 rounded-xl cursor-pointer hover:border-rose-300 hover:bg-gray-100 transition-all duration-200"
                     onClick={() => handleMarkerClick(pharmacy)}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-white group-hover:text-emerald-400 transition-colors truncate">
+                        <h3 className="font-semibold text-gray-900 group-hover:text-rose-600 transition-colors truncate">
                           {pharmacy.name}
                         </h3>
-                        <p className="text-xs text-slate-400 mt-1 line-clamp-1">
+                        <p className="text-xs text-gray-600 mt-1 line-clamp-1">
                           {pharmacy.address}, {pharmacy.city}
                         </p>
                         <div className="flex items-center gap-2 mt-2">
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-xs font-medium text-emerald-400">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-100 border border-rose-200 text-xs font-medium text-rose-700">
                             <Package className="w-3 h-3" />
                             {pharmacy.products.length}
                           </span>
@@ -298,18 +298,18 @@ export default function MapPage() {
               
               {/* Pharmacy Pagination */}
               {totalPharmacyPages > 1 && (
-                <div className="flex items-center justify-between gap-2 pt-3 border-t border-slate-700/50">
+                <div className="flex items-center justify-between gap-2 pt-3 border-t border-gray-200">
                   <Button
                     onClick={() => handlePharmacyPageChange(currentPharmacyPage - 1)}
                     disabled={currentPharmacyPage === 1}
                     variant="outline"
                     size="sm"
-                    className="flex items-center gap-1 border-slate-600 text-slate-300 hover:bg-slate-800 disabled:opacity-30"
+                    className="flex items-center gap-1 border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-30"
                   >
                     <ChevronLeft className="w-3 h-3" />
                     Prev
                   </Button>
-                  <span className="text-xs font-medium text-slate-400">
+                  <span className="text-xs font-medium text-gray-600">
                     Page {currentPharmacyPage} / {totalPharmacyPages}
                   </span>
                   <Button
@@ -317,7 +317,7 @@ export default function MapPage() {
                     disabled={currentPharmacyPage === totalPharmacyPages}
                     variant="outline"
                     size="sm"
-                    className="flex items-center gap-1 border-slate-600 text-slate-300 hover:bg-slate-800 disabled:opacity-30"
+                    className="flex items-center gap-1 border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-30"
                   >
                     Next
                     <ChevronRight className="w-3 h-3" />
@@ -335,11 +335,11 @@ export default function MapPage() {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center p-3 gap-3"
             >
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-rose-500 to-teal-500 flex items-center justify-center">
                 <MapPin className="w-6 h-6 text-white" />
               </div>
               <div className="text-center">
-                <p className="text-xs font-medium text-emerald-400 whitespace-nowrap" style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
+                <p className="text-xs font-medium text-rose-600 whitespace-nowrap" style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
                   {pharmacies.length}
                 </p>
               </div>
@@ -398,32 +398,32 @@ export default function MapPage() {
           <div className="space-y-6">
             {/* Pharmacy Info Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl p-4 border border-emerald-200/50 dark:border-emerald-700/50">
-                <p className="text-xs font-medium text-emerald-700 dark:text-emerald-400 mb-2 uppercase tracking-wide">Address</p>
+              <div className="bg-gradient-to-br from-rose-50 to-pink-50 rounded-xl p-4 border border-rose-200">
+                <p className="text-xs font-medium text-rose-700 mb-2 uppercase tracking-wide">Address</p>
                 <div className="flex items-start gap-2">
-                  <MapPin className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
+                  <MapPin className="w-5 h-5 text-rose-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-gray-900 dark:text-white font-medium">
+                    <p className="text-gray-900 font-medium">
                       {selectedPharmacy.address}
                     </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-gray-600">
                       {selectedPharmacy.city}, {selectedPharmacy.state} {selectedPharmacy.zipCode}
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 rounded-xl p-4 border border-cyan-200/50 dark:border-cyan-700/50">
-                <p className="text-xs font-medium text-cyan-700 dark:text-cyan-400 mb-2 uppercase tracking-wide">Contact</p>
+              <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-xl p-4 border border-teal-200">
+                <p className="text-xs font-medium text-teal-700 mb-2 uppercase tracking-wide">Contact</p>
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
-                    <a href={`tel:${selectedPharmacy.phone}`} className="text-cyan-700 dark:text-cyan-400 hover:text-cyan-800 dark:hover:text-cyan-300 font-medium transition-colors">
+                    <Phone className="w-4 h-4 text-teal-600" />
+                    <a href={`tel:${selectedPharmacy.phone}`} className="text-teal-700 hover:text-teal-800 font-medium transition-colors">
                       {selectedPharmacy.phone}
                     </a>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
-                    <a href={`mailto:${selectedPharmacy.email}`} className="text-cyan-700 dark:text-cyan-400 hover:text-cyan-800 dark:hover:text-cyan-300 font-medium transition-colors text-sm break-all">
+                    <Mail className="w-4 h-4 text-teal-600" />
+                    <a href={`mailto:${selectedPharmacy.email}`} className="text-teal-700 hover:text-teal-800 font-medium transition-colors text-sm break-all">
                       {selectedPharmacy.email}
                     </a>
                   </div>
@@ -434,24 +434,24 @@ export default function MapPage() {
             {/* Products Section */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                <h3 className="text-lg font-bold text-gray-900">
                   Available Products
                 </h3>
-                <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-sm font-medium text-emerald-600 dark:text-emerald-400">
+                <span className="px-3 py-1 rounded-full bg-rose-100 border border-rose-200 text-sm font-medium text-rose-700">
                   {selectedPharmacy.products.length} products
                 </span>
               </div>
               
               {selectedPharmacy.products.length === 0 ? (
-                <div className="text-center py-8 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+                <div className="text-center py-8 bg-gray-50 rounded-xl border border-gray-200">
                   <Package className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                  <p className="text-gray-600 dark:text-gray-400">No products available at this pharmacy.</p>
+                  <p className="text-gray-600">No products available at this pharmacy.</p>
                 </div>
               ) : (
                 <>
                   {selectedPharmacy.products.length > PRODUCTS_PER_PAGE && (
-                    <div className="mb-4 px-3 py-2 bg-slate-100 dark:bg-slate-800/50 rounded-lg">
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <div className="mb-4 px-3 py-2 bg-gray-100 rounded-lg">
+                      <p className="text-sm text-gray-600">
                         Showing {startProductIndex + 1} - {Math.min(endProductIndex, selectedPharmacy.products.length)} of {selectedPharmacy.products.length} products
                       </p>
                     </div>
@@ -465,24 +465,24 @@ export default function MapPage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.05 }}
                       >
-                        <div className="bg-white dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200 dark:border-slate-700 hover:border-emerald-500/50 hover:shadow-lg transition-all duration-200 h-full flex flex-col">
+                        <div className="bg-white backdrop-blur-sm rounded-xl p-4 border border-gray-200 hover:border-rose-300 hover:shadow-lg transition-all duration-200 h-full flex flex-col">
                           <div className="flex items-start justify-between mb-3 gap-2">
-                            <h4 className="font-semibold text-gray-900 dark:text-white text-sm line-clamp-2 flex-1">
+                            <h4 className="font-semibold text-gray-900 text-sm line-clamp-2 flex-1">
                               {product.name}
                             </h4>
-                            <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400 flex-shrink-0 ml-2">
+                            <span className="text-lg font-bold text-rose-600 flex-shrink-0 ml-2">
                               {formatCurrency(product.price)}
                             </span>
                           </div>
                           
                           <div className="flex items-center gap-2 mb-3">
-                            <span className="px-2 py-1 rounded-md bg-slate-100 dark:bg-slate-700 text-xs font-medium text-gray-700 dark:text-gray-300 capitalize">
+                            <span className="px-2 py-1 rounded-md bg-gray-100 text-xs font-medium text-gray-700 capitalize">
                               {product.category.replace('-', ' ')}
                             </span>
                             <span className={`px-2 py-1 rounded-md text-xs font-medium ${
                               product.quantity > 0 
-                                ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' 
-                                : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
+                                ? 'bg-green-100 text-green-700' 
+                                : 'bg-red-100 text-red-700'
                             }`}>
                               {product.quantity > 0 ? `${product.quantity} in stock` : 'Out of stock'}
                             </span>
@@ -490,7 +490,7 @@ export default function MapPage() {
                           
                           <Button
                             size="sm"
-                            className="w-full mt-auto bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-0"
+                            className="w-full mt-auto bg-gradient-to-r from-rose-500 to-teal-500 hover:from-rose-600 hover:to-teal-600 text-white border-0"
                             onClick={() => handleAddToCart(product, selectedPharmacy)}
                             disabled={product.quantity === 0}
                           >
@@ -504,7 +504,7 @@ export default function MapPage() {
                   
                   {/* Product Pagination */}
                   {totalProductPages > 1 && (
-                    <div className="flex items-center justify-center gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center justify-center gap-3 pt-4 border-t border-gray-200">
                       <Button
                         onClick={() => handleProductPageChange(currentProductPage - 1)}
                         disabled={currentProductPage === 1}
@@ -515,7 +515,7 @@ export default function MapPage() {
                         <ChevronLeft className="w-3 h-3" />
                         Previous
                       </Button>
-                      <span className="text-sm font-medium text-gray-600 dark:text-gray-400 px-3">
+                      <span className="text-sm font-medium text-gray-600 px-3">
                         Page {currentProductPage} / {totalProductPages}
                       </span>
                       <Button

@@ -46,8 +46,8 @@ export default function Navbar() {
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         scrolled
-          ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-lg'
-          : 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm'
+          ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200'
+          : 'bg-white/90 backdrop-blur-sm'
       )}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -56,11 +56,11 @@ export default function Navbar() {
             <motion.div
               whileHover={{ rotate: 360 }}
               transition={{ duration: 0.5 }}
-              className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center"
+              className="w-10 h-10 bg-gradient-to-br from-rose-500 to-teal-500 rounded-lg flex items-center justify-center"
             >
               <Package className="w-6 h-6 text-white" />
             </motion.div>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="text-xl font-bold bg-gradient-to-r from-rose-500 to-teal-500 bg-clip-text text-transparent">
               PharmaHub
             </span>
           </Link>
@@ -78,8 +78,8 @@ export default function Navbar() {
                     className={cn(
                       'flex items-center space-x-1 px-4 py-2 rounded-lg transition-colors',
                       isActive
-                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        ? 'bg-gradient-to-r from-rose-500 to-teal-500 text-white shadow-md'
+                        : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                     )}
                   >
                     <Icon size={18} />
@@ -98,7 +98,7 @@ export default function Navbar() {
                   <motion.div
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className="relative p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                    className="relative p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                   >
                     <ShoppingCart size={20} />
                     {getItemCount() > 0 && (
@@ -113,7 +113,7 @@ export default function Navbar() {
                   </motion.div>
                 </Link>
                 <div className="hidden md:flex items-center space-x-2">
-                  <span className="text-sm text-gray-700 dark:text-gray-300">
+                  <span className="text-sm text-gray-700 font-medium">
                     {user.name}
                   </span>
                   <Button variant="ghost" size="sm" onClick={signOut}>
@@ -135,7 +135,7 @@ export default function Navbar() {
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden p-2 text-gray-700 dark:text-gray-300"
+              className="md:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
               onClick={() => setIsOpen(!isOpen)}
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -148,7 +148,7 @@ export default function Navbar() {
       <motion.div
         initial={false}
         animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
-        className="md:hidden overflow-hidden border-t border-gray-200 dark:border-gray-700"
+        className="md:hidden overflow-hidden border-t border-gray-200 bg-white"
       >
         <div className="px-4 py-4 space-y-2">
           {navLinks.map((link) => {
@@ -157,12 +157,12 @@ export default function Navbar() {
             return (
               <Link key={link.href} href={link.href} onClick={() => setIsOpen(false)}>
                 <div
-                  className={cn(
-                    'flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors',
-                    isActive
-                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-                  )}
+                    className={cn(
+                      'flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors',
+                      isActive
+                        ? 'bg-gradient-to-r from-rose-500 to-teal-500 text-white shadow-md'
+                        : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                    )}
                 >
                   <Icon size={18} />
                   <span>{link.label}</span>
