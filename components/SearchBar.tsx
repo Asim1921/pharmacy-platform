@@ -53,7 +53,7 @@ export default function SearchBar({ onSearch, categories }: SearchBarProps) {
         </div>
         <button
           onClick={handleSearch}
-          className="px-6 py-3 bg-gradient-to-r from-rose-500 to-teal-500 text-white rounded-xl hover:from-rose-600 hover:to-teal-600 transition-all duration-200 shadow-lg shadow-rose-500/25 font-medium"
+          className="px-6 py-3 bg-teal-500 text-white rounded-xl hover:bg-teal-600 transition-all duration-200 shadow-lg shadow-teal-500/25 font-medium"
         >
           Search
         </button>

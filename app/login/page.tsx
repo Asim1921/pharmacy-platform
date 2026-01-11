@@ -55,7 +55,7 @@ export default function LoginPage() {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-rose-500 to-teal-500 rounded-2xl mb-4 shadow-lg shadow-rose-500/25"
+              className="inline-flex items-center justify-center w-20 h-20 bg-teal-500 rounded-2xl mb-4 shadow-lg shadow-teal-500/25"
             >
               <LogIn className="w-10 h-10 text-white" />
             </motion.div>
@@ -115,7 +115,7 @@ export default function LoginPage() {
             >
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-rose-500 to-teal-500 hover:from-rose-600 hover:to-teal-600 text-white border-0 shadow-lg shadow-rose-500/25"
+                className="w-full bg-teal-500 hover:bg-teal-600 text-white border-0 shadow-lg shadow-teal-500/25"
                 isLoading={isLoading}
               >
                 Sign In

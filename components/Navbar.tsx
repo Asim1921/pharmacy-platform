@@ -56,11 +56,11 @@ export default function Navbar() {
             <motion.div
               whileHover={{ rotate: 360 }}
               transition={{ duration: 0.5 }}
-              className="w-10 h-10 bg-gradient-to-br from-rose-500 to-teal-500 rounded-lg flex items-center justify-center"
+              className="w-10 h-10 bg-teal-500 rounded-lg flex items-center justify-center"
             >
               <Package className="w-6 h-6 text-white" />
             </motion.div>
-            <span className="text-xl font-bold bg-gradient-to-r from-rose-500 to-teal-500 bg-clip-text text-transparent">
+            <span className="text-xl font-bold text-teal-500">
               PharmaHub
             </span>
           </Link>
@@ -78,7 +78,7 @@ export default function Navbar() {
                     className={cn(
                       'flex items-center space-x-1 px-4 py-2 rounded-lg transition-colors',
                       isActive
-                        ? 'bg-gradient-to-r from-rose-500 to-teal-500 text-white shadow-md'
+                        ? 'bg-teal-500 text-white shadow-md'
                         : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                     )}
                   >
@@ -160,7 +160,7 @@ export default function Navbar() {
                     className={cn(
                       'flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors',
                       isActive
-                        ? 'bg-gradient-to-r from-rose-500 to-teal-500 text-white shadow-md'
+                        ? 'bg-teal-500 text-white shadow-md'
                         : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                     )}
                 >

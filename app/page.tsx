@@ -98,7 +98,7 @@ export default function Home() {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
-                      <Button size="lg" className="bg-gradient-to-r from-rose-500 to-teal-500 text-white hover:from-rose-600 hover:to-teal-600 shadow-lg shadow-rose-500/25 border-0 px-8 py-6 text-lg">
+                      <Button size="lg" className="bg-teal-500 text-white hover:bg-teal-600 shadow-lg shadow-teal-500/25 border-0 px-8 py-6 text-lg">
                         Get Started Free
                       </Button>
                     </motion.div>
@@ -120,7 +120,7 @@ export default function Home() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <Button size="lg" className="bg-gradient-to-r from-rose-500 to-teal-500 text-white hover:from-rose-600 hover:to-teal-600 shadow-lg shadow-rose-500/25 border-0 px-8 py-6 text-lg">
+                    <Button size="lg" className="bg-teal-500 text-white hover:bg-teal-600 shadow-lg shadow-teal-500/25 border-0 px-8 py-6 text-lg">
                       Browse Products
                     </Button>
                   </motion.div>
@@ -136,7 +136,7 @@ export default function Home() {
               className="grid grid-cols-3 gap-8 max-w-2xl mx-auto mt-16 pt-8 border-t border-gray-200"
             >
               <div className="text-center">
-                <div className="text-3xl font-bold bg-gradient-to-r from-rose-500 to-teal-500 bg-clip-text text-transparent">500+</div>
+                <div className="text-3xl font-bold text-teal-500">500+</div>
                 <div className="text-sm text-gray-600 mt-1">Pharmacies</div>
               </div>
               <div className="text-center">
@@ -313,7 +313,7 @@ export default function Home() {
             <motion.div
               animate={{ rotate: [0, 10, -10, 0] }}
               transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-              className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-rose-500 to-teal-500 mb-6 shadow-lg shadow-rose-500/25"
+              className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-teal-500 mb-6 shadow-lg shadow-teal-500/25"
             >
               <Heart className="w-10 h-10 text-white" />
             </motion.div>
@@ -329,7 +329,7 @@ export default function Home() {
                 whileTap={{ scale: 0.95 }}
               >
                 <Link href="/register">
-                  <Button size="lg" className="bg-gradient-to-r from-rose-500 to-teal-500 text-white hover:from-rose-600 hover:to-teal-600 shadow-lg shadow-rose-500/25 border-0 px-10 py-6 text-lg">
+                  <Button size="lg" className="bg-teal-500 text-white hover:bg-teal-600 shadow-lg shadow-teal-500/25 border-0 px-10 py-6 text-lg">
                     Create Your Account
                   </Button>
                 </Link>

@@ -195,7 +195,7 @@ export default function ProductsPage() {
           className="mb-8"
         >
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-500 to-teal-500 flex items-center justify-center shadow-lg shadow-rose-500/25">
+            <div className="w-12 h-12 rounded-xl bg-teal-500 flex items-center justify-center shadow-lg shadow-teal-500/25">
               <Package className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -300,7 +300,7 @@ export default function ProductsPage() {
                             variant={currentPage === page ? "primary" : "outline"}
                             className={`min-w-[40px] ${
                               currentPage === page
-                                ? 'bg-gradient-to-r from-rose-500 to-teal-500 border-0 text-white shadow-lg shadow-rose-500/25'
+                                ? 'bg-teal-500 border-0 text-white shadow-lg shadow-teal-500/25 hover:bg-teal-600'
                                 : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                             }`}
                           >
@@ -432,7 +432,7 @@ export default function ProductsPage() {
               <Button
                 className={`w-full ${
                   selectedProduct.quantity > 0
-                    ? 'bg-gradient-to-r from-rose-500 to-teal-500 hover:from-rose-600 hover:to-teal-600 text-white border-0 shadow-lg shadow-rose-500/25'
+                    ? 'bg-teal-500 hover:bg-teal-600 text-white border-0 shadow-lg shadow-teal-500/25'
                     : 'bg-gray-200 text-gray-500 border-gray-300 cursor-not-allowed'
                 }`}
                 onClick={handleAddToCart}

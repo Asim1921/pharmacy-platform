@@ -213,7 +213,7 @@ export default function CartPage() {
                   <div className="pt-4 border-t border-gray-200">
                     <div className="flex justify-between text-lg font-bold">
                       <span className="text-gray-900">Total</span>
-                      <span className="bg-gradient-to-r from-rose-500 to-teal-500 bg-clip-text text-transparent">
+                      <span className="text-teal-500">
                         {formatCurrency(getTotal() * 1.1)}
                       </span>
                     </div>

@@ -245,10 +245,10 @@ export default function MapPage() {
               className="p-5"
             >
               <div className="flex items-center gap-2 mb-3 pr-8">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-rose-500 to-teal-500 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-teal-500 flex items-center justify-center">
                   <MapPin className="w-5 h-5 text-white" />
                 </div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-rose-500 to-teal-500 bg-clip-text text-transparent">
+                <h1 className="text-2xl font-bold text-teal-500">
                   Find Pharmacies
                 </h1>
               </div>
@@ -335,7 +335,7 @@ export default function MapPage() {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center p-3 gap-3"
             >
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-rose-500 to-teal-500 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-lg bg-teal-500 flex items-center justify-center">
                 <MapPin className="w-6 h-6 text-white" />
               </div>
               <div className="text-center">
@@ -490,7 +490,7 @@ export default function MapPage() {
                           
                           <Button
                             size="sm"
-                            className="w-full mt-auto bg-gradient-to-r from-rose-500 to-teal-500 hover:from-rose-600 hover:to-teal-600 text-white border-0"
+                            className="w-full mt-auto bg-teal-500 hover:bg-teal-600 text-white border-0"
                             onClick={() => handleAddToCart(product, selectedPharmacy)}
                             disabled={product.quantity === 0}
                           >

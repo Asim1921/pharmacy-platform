@@ -138,7 +138,7 @@ export default function ProductCard({ product, pharmacy, onViewDetails }: Produc
         <Button
           className={`flex-1 ${
             product.quantity > 0
-              ? 'bg-gradient-to-r from-rose-500 to-teal-500 hover:from-rose-600 hover:to-teal-600 text-white border-0 shadow-lg shadow-rose-500/25'
+              ? 'bg-teal-500 hover:bg-teal-600 text-white border-0 shadow-lg shadow-teal-500/25'
               : 'bg-gray-200 text-gray-500 border-gray-300 cursor-not-allowed'
           }`}
           onClick={handleAddToCart}

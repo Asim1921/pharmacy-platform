@@ -715,7 +715,7 @@ export default function DashboardPage() {
             <div className="pt-4 border-t border-gray-200">
               <div className="flex justify-between items-center mb-4">
                 <span className="text-lg font-semibold text-gray-900">Total Amount</span>
-                <span className="text-2xl font-bold bg-gradient-to-r from-rose-500 to-teal-500 bg-clip-text text-transparent">
+                <span className="text-2xl font-bold text-teal-500">
                   {formatCurrency(selectedOrder.totalAmount)}
                 </span>
               </div>
