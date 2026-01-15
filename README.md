@@ -81,6 +81,12 @@ The application uses the following Firestore collections:
 - **products**: Product inventory with pharmacy references
 - **orders**: Customer orders with items and status
 
+### Admin Credentials
+
+Default admin account credentials:
+- **Email**: admin@gmail.com
+- **Password**: password
+
 ### Creating an Admin User
 
 To create an admin user:
