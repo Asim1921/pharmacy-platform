@@ -40,3 +40,4 @@ IMPORTANT:
 5. Then run: npm run update-locations
 6. REVERT rules back after!
 
+
