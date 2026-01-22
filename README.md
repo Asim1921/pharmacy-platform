@@ -87,6 +87,11 @@ Default admin account credentials:
 - **Email**: admin@gmail.com
 - **Password**: password
 
+
+### USer Credentials
+Default user account credentials:
+- **Email**: user2@gmail.com
+- **Password**: Motion@123
 ### Creating an Admin User
 
 To create an admin user:

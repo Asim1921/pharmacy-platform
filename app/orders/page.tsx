@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { collection, query, where, getDocs, doc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, updateDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Order } from '@/types';
@@ -94,14 +94,26 @@ export default function OrdersPage() {
       const quantityUpdateErrors: string[] = [];
       for (const item of order.items) {
         try {
-        const productRef = doc(db, 'products', item.productId);
-        await updateDoc(productRef, {
-          quantity: increment(item.quantity),
-        });
-        } catch (quantityError) {
+          const productRef = doc(db, 'products', item.productId);
+          const productSnap = await getDoc(productRef);
+          
+          if (!productSnap.exists()) {
+            quantityUpdateErrors.push(`${item.productName} - Product not found`);
+            continue;
+          }
+          
+          const currentQuantity = productSnap.data().quantity || 0;
+          const newQuantity = currentQuantity + item.quantity;
+          
+          // Update quantity directly (more compatible with Firestore rules)
+          await updateDoc(productRef, {
+            quantity: newQuantity,
+          });
+          console.log(`Successfully restored stock for ${item.productName} from ${currentQuantity} to ${newQuantity}`);
+        } catch (quantityError: any) {
           // Log error but don't fail the cancellation
-          console.warn(`Failed to restore quantity for product ${item.productId}:`, quantityError);
-          quantityUpdateErrors.push(item.productName);
+          console.error(`Failed to restore quantity for product ${item.productId}:`, quantityError);
+          quantityUpdateErrors.push(`${item.productName}: ${quantityError?.message || 'Unknown error'}`);
         }
       }
 

@@ -9,7 +9,7 @@ import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import { formatCurrency } from '@/lib/utils';
 import { toast } from 'react-hot-toast';
-import { collection, addDoc, serverTimestamp, doc, updateDoc, increment } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, updateDoc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
 export default function CartPage() {
@@ -30,7 +30,74 @@ export default function CartPage() {
     }
 
     try {
-      // Create order
+      // First, validate stock availability for all items
+      const stockValidationErrors: string[] = [];
+      for (const item of items) {
+        try {
+          const productRef = doc(db, 'products', item.productId);
+          const productSnap = await getDoc(productRef);
+          
+          if (!productSnap.exists()) {
+            stockValidationErrors.push(`${item.productName} - Product not found`);
+            continue;
+          }
+          
+          const currentQuantity = productSnap.data().quantity || 0;
+          if (currentQuantity < item.quantity) {
+            stockValidationErrors.push(
+              `${item.productName} - Only ${currentQuantity} available (requested: ${item.quantity})`
+            );
+          }
+        } catch (error) {
+          console.error(`Error validating stock for ${item.productName}:`, error);
+          stockValidationErrors.push(`${item.productName} - Unable to verify stock`);
+        }
+      }
+
+      // If any stock validation failed, show errors and abort
+      if (stockValidationErrors.length > 0) {
+        toast.error(`Stock validation failed:\n${stockValidationErrors.join('\n')}`, { duration: 5000 });
+        return;
+      }
+
+      // Update product quantities BEFORE creating order
+      const quantityUpdateErrors: string[] = [];
+      for (const item of items) {
+        try {
+          const productRef = doc(db, 'products', item.productId);
+          const productSnap = await getDoc(productRef);
+          
+          if (!productSnap.exists()) {
+            quantityUpdateErrors.push(`${item.productName} - Product not found`);
+            continue;
+          }
+          
+          const currentQuantity = productSnap.data().quantity || 0;
+          const newQuantity = currentQuantity - item.quantity;
+          
+          if (newQuantity < 0) {
+            quantityUpdateErrors.push(`${item.productName} - Insufficient stock (available: ${currentQuantity}, requested: ${item.quantity})`);
+            continue;
+          }
+          
+          // Update quantity directly (more compatible with Firestore rules)
+          await updateDoc(productRef, {
+            quantity: newQuantity,
+          });
+          console.log(`Successfully reduced stock for ${item.productName} from ${currentQuantity} to ${newQuantity}`);
+        } catch (quantityError: any) {
+          console.error(`Failed to update quantity for product ${item.productId}:`, quantityError);
+          quantityUpdateErrors.push(`${item.productName}: ${quantityError?.message || 'Unknown error'}`);
+        }
+      }
+
+      // If any quantity updates failed, abort order creation
+      if (quantityUpdateErrors.length > 0) {
+        toast.error(`Failed to update inventory:\n${quantityUpdateErrors.join('\n')}`, { duration: 5000 });
+        return;
+      }
+
+      // Create order only after successful stock updates
       const orderData = {
         userId: user.id,
         items: items.map((item) => ({
@@ -48,34 +115,13 @@ export default function CartPage() {
       };
 
       const orderRef = await addDoc(collection(db, 'orders'), orderData);
+      console.log('Order created successfully:', orderRef.id);
 
-      // Update product quantities - handle errors per product but don't fail the order
-      const quantityUpdateErrors: string[] = [];
-      for (const item of items) {
-        try {
-        const productRef = doc(db, 'products', item.productId);
-        await updateDoc(productRef, {
-          quantity: increment(-item.quantity),
-        });
-        } catch (quantityError) {
-          // Log error but don't fail the order
-          console.warn(`Failed to update quantity for product ${item.productId}:`, quantityError);
-          quantityUpdateErrors.push(item.productName);
-        }
-      }
-
-      // Show success message
-      if (quantityUpdateErrors.length > 0) {
-        toast.success('Order placed successfully! (Some inventory updates may need admin review)');
-      } else {
-      toast.success('Order placed successfully!');
-      }
-      
+      toast.success('Order placed successfully! Stock has been updated.');
       clearCart();
       router.push('/orders');
     } catch (error: any) {
       console.error('Error placing order:', error);
-      // Only show error if order creation actually failed
       const errorMessage = error?.message || 'Failed to place order. Please try again.';
       toast.error(errorMessage);
     }
